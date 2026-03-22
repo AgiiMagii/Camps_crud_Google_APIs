@@ -1,0 +1,944 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SummerCampModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="addressID" />
+          </Key>
+          <Property Name="addressID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="50" />
+          <Property Name="Region" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="ZipCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Administration">
+          <Key>
+            <PropertyRef Name="administrationID" />
+          </Key>
+          <Property Name="administrationID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="50" />
+          <Property Name="roleID" Type="bigint" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="AdminRoles">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Audit">
+          <Key>
+            <PropertyRef Name="ID_audit" />
+          </Key>
+          <Property Name="ID_audit" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LogTime" Type="datetime" Nullable="false" />
+          <Property Name="LogResult" Type="bit" Nullable="false" />
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="IP" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CampAdmin">
+          <Key>
+            <PropertyRef Name="administrationID" />
+            <PropertyRef Name="campID" />
+          </Key>
+          <Property Name="administrationID" Type="bigint" Nullable="false" />
+          <Property Name="campID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="CampFood">
+          <Key>
+            <PropertyRef Name="providerID" />
+            <PropertyRef Name="campID" />
+          </Key>
+          <Property Name="providerID" Type="bigint" Nullable="false" />
+          <Property Name="campID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Camps">
+          <Key>
+            <PropertyRef Name="campID" />
+          </Key>
+          <Property Name="campID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="addressID" Type="bigint" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="225" />
+          <Property Name="Capacity" Type="smallint" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ChildParent">
+          <Key>
+            <PropertyRef Name="childID" />
+            <PropertyRef Name="parentID" />
+          </Key>
+          <Property Name="childID" Type="bigint" Nullable="false" />
+          <Property Name="parentID" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Children">
+          <Key>
+            <PropertyRef Name="childID" />
+          </Key>
+          <Property Name="childID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="50" />
+          <Property Name="Gender" Type="varchar" MaxLength="1" />
+          <Property Name="BirthYear" Type="smallint" />
+        </EntityType>
+        <EntityType Name="Contracts">
+          <Key>
+            <PropertyRef Name="contractID" />
+          </Key>
+          <Property Name="contractID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="parentID" Type="bigint" />
+          <Property Name="patent2ID" Type="bigint" Nullable="false" />
+          <Property Name="childID" Type="bigint" />
+          <Property Name="campID" Type="bigint" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Balance" Type="decimal" Precision="18" Scale="0" />
+        </EntityType>
+        <EntityType Name="FoodProvider">
+          <Key>
+            <PropertyRef Name="providerID" />
+          </Key>
+          <Property Name="providerID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Capacity" Type="smallint" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="225" />
+        </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="invoiceID" />
+          </Key>
+          <Property Name="invoiceID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="contractID" Type="bigint" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Duedate" Type="datetime" />
+          <Property Name="Paid" Type="bit" />
+        </EntityType>
+        <EntityType Name="Parents">
+          <Key>
+            <PropertyRef Name="parentID" />
+          </Key>
+          <Property Name="parentID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="50" />
+          <Property Name="Parent" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="Phone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="UserRoles">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Username" />
+          </Key>
+          <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Surname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="passwordHash" Type="nvarchar" MaxLength="60" Nullable="false" />
+          <Property Name="Enabled" Type="bit" Nullable="false" />
+          <Property Name="DisabledTill" Type="datetime" />
+          <Property Name="IsAdmin" Type="bit" />
+          <Property Name="roleID" Type="int" />
+        </EntityType>
+        <Association Name="FK_Administration_AdminRoles">
+          <End Role="AdminRoles" Type="Self.AdminRoles" Multiplicity="0..1" />
+          <End Role="Administration" Type="Self.Administration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdminRoles">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="Administration">
+              <PropertyRef Name="roleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Audit_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="Audit" Type="Self.Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Username" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="Username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CampAdmin_Administration">
+          <End Role="Administration" Type="Self.Administration" Multiplicity="1" />
+          <End Role="CampAdmin" Type="Self.CampAdmin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Administration">
+              <PropertyRef Name="administrationID" />
+            </Principal>
+            <Dependent Role="CampAdmin">
+              <PropertyRef Name="administrationID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CampAdmin_Camps">
+          <End Role="Camps" Type="Self.Camps" Multiplicity="1" />
+          <End Role="CampAdmin" Type="Self.CampAdmin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camps">
+              <PropertyRef Name="campID" />
+            </Principal>
+            <Dependent Role="CampAdmin">
+              <PropertyRef Name="campID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CampFood_Camps">
+          <End Role="Camps" Type="Self.Camps" Multiplicity="1" />
+          <End Role="CampFood" Type="Self.CampFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camps">
+              <PropertyRef Name="campID" />
+            </Principal>
+            <Dependent Role="CampFood">
+              <PropertyRef Name="campID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CampFood_FoodProvider">
+          <End Role="FoodProvider" Type="Self.FoodProvider" Multiplicity="1" />
+          <End Role="CampFood" Type="Self.CampFood" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="FoodProvider">
+              <PropertyRef Name="providerID" />
+            </Principal>
+            <Dependent Role="CampFood">
+              <PropertyRef Name="providerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Camps_Address">
+          <End Role="Address" Type="Self.Address" Multiplicity="0..1" />
+          <End Role="Camps" Type="Self.Camps" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="addressID" />
+            </Principal>
+            <Dependent Role="Camps">
+              <PropertyRef Name="addressID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChildParent_Children">
+          <End Role="Children" Type="Self.Children" Multiplicity="1" />
+          <End Role="ChildParent" Type="Self.ChildParent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Children">
+              <PropertyRef Name="childID" />
+            </Principal>
+            <Dependent Role="ChildParent">
+              <PropertyRef Name="childID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ChildParent_Parents">
+          <End Role="Parents" Type="Self.Parents" Multiplicity="1" />
+          <End Role="ChildParent" Type="Self.ChildParent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parents">
+              <PropertyRef Name="parentID" />
+            </Principal>
+            <Dependent Role="ChildParent">
+              <PropertyRef Name="parentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Camps">
+          <End Role="Camps" Type="Self.Camps" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camps">
+              <PropertyRef Name="campID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="campID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Children">
+          <End Role="Children" Type="Self.Children" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Children">
+              <PropertyRef Name="childID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="childID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Parents">
+          <End Role="Parents" Type="Self.Parents" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parents">
+              <PropertyRef Name="parentID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="parentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Parents1">
+          <End Role="Parents" Type="Self.Parents" Multiplicity="1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parents">
+              <PropertyRef Name="parentID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="patent2ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Contracts">
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contracts">
+              <PropertyRef Name="contractID" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="contractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_UserRoles">
+          <End Role="UserRoles" Type="Self.UserRoles" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoles">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="roleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="SummerCampModelStoreContainer">
+          <EntitySet Name="Address" EntityType="Self.Address" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Administration" EntityType="Self.Administration" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AdminRoles" EntityType="Self.AdminRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Audit" EntityType="Self.Audit" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CampAdmin" EntityType="Self.CampAdmin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CampFood" EntityType="Self.CampFood" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Camps" EntityType="Self.Camps" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChildParent" EntityType="Self.ChildParent" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Children" EntityType="Self.Children" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Contracts" EntityType="Self.Contracts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FoodProvider" EntityType="Self.FoodProvider" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Invoice" EntityType="Self.Invoice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Parents" EntityType="Self.Parents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Administration_AdminRoles" Association="Self.FK_Administration_AdminRoles">
+            <End Role="AdminRoles" EntitySet="AdminRoles" />
+            <End Role="Administration" EntitySet="Administration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Audit_Users" Association="Self.FK_Audit_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CampAdmin_Administration" Association="Self.FK_CampAdmin_Administration">
+            <End Role="Administration" EntitySet="Administration" />
+            <End Role="CampAdmin" EntitySet="CampAdmin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CampAdmin_Camps" Association="Self.FK_CampAdmin_Camps">
+            <End Role="Camps" EntitySet="Camps" />
+            <End Role="CampAdmin" EntitySet="CampAdmin" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CampFood_Camps" Association="Self.FK_CampFood_Camps">
+            <End Role="Camps" EntitySet="Camps" />
+            <End Role="CampFood" EntitySet="CampFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CampFood_FoodProvider" Association="Self.FK_CampFood_FoodProvider">
+            <End Role="FoodProvider" EntitySet="FoodProvider" />
+            <End Role="CampFood" EntitySet="CampFood" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Camps_Address" Association="Self.FK_Camps_Address">
+            <End Role="Address" EntitySet="Address" />
+            <End Role="Camps" EntitySet="Camps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChildParent_Children" Association="Self.FK_ChildParent_Children">
+            <End Role="Children" EntitySet="Children" />
+            <End Role="ChildParent" EntitySet="ChildParent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ChildParent_Parents" Association="Self.FK_ChildParent_Parents">
+            <End Role="Parents" EntitySet="Parents" />
+            <End Role="ChildParent" EntitySet="ChildParent" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Camps" Association="Self.FK_Contracts_Camps">
+            <End Role="Camps" EntitySet="Camps" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Children" Association="Self.FK_Contracts_Children">
+            <End Role="Children" EntitySet="Children" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Parents" Association="Self.FK_Contracts_Parents">
+            <End Role="Parents" EntitySet="Parents" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Parents1" Association="Self.FK_Contracts_Parents1">
+            <End Role="Parents" EntitySet="Parents" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Contracts" Association="Self.FK_Invoice_Contracts">
+            <End Role="Contracts" EntitySet="Contracts" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_UserRoles" Association="Self.FK_Users_UserRoles">
+            <End Role="UserRoles" EntitySet="UserRoles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SummerCampModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Address">
+          <Key>
+            <PropertyRef Name="addressID" />
+          </Key>
+          <Property Name="addressID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Country" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ZipCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Camps" Relationship="Self.FK_Camps_Address" FromRole="Address" ToRole="Camps" />
+        </EntityType>
+        <EntityType Name="Administration">
+          <Key>
+            <PropertyRef Name="administrationID" />
+          </Key>
+          <Property Name="administrationID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="roleID" Type="Int64" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="AdminRoles" Relationship="Self.FK_Administration_AdminRoles" FromRole="Administration" ToRole="AdminRoles" />
+          <NavigationProperty Name="Camps" Relationship="Self.CampAdmin" FromRole="Administration" ToRole="Camps" />
+        </EntityType>
+        <EntityType Name="AdminRoles">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Administration" Relationship="Self.FK_Administration_AdminRoles" FromRole="AdminRoles" ToRole="Administration" />
+        </EntityType>
+        <EntityType Name="Camps">
+          <Key>
+            <PropertyRef Name="campID" />
+          </Key>
+          <Property Name="campID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="addressID" Type="Int64" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
+          <Property Name="Capacity" Type="Int16" />
+          <NavigationProperty Name="Address" Relationship="Self.FK_Camps_Address" FromRole="Camps" ToRole="Address" />
+          <NavigationProperty Name="Contracts" Relationship="Self.FK_Contracts_Camps" FromRole="Camps" ToRole="Contracts" />
+          <NavigationProperty Name="Administration" Relationship="Self.CampAdmin" FromRole="Camps" ToRole="Administration" />
+          <NavigationProperty Name="FoodProvider" Relationship="Self.CampFood" FromRole="Camps" ToRole="FoodProvider" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Children">
+          <Key>
+            <PropertyRef Name="childID" />
+          </Key>
+          <Property Name="childID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Gender" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="BirthYear" Type="Int16" />
+          <NavigationProperty Name="Contracts" Relationship="Self.FK_Contracts_Children" FromRole="Children" ToRole="Contracts" />
+          <NavigationProperty Name="Parents" Relationship="Self.ChildParent" FromRole="Children" ToRole="Parents" />
+        </EntityType>
+        <EntityType Name="Contracts">
+          <Key>
+            <PropertyRef Name="contractID" />
+          </Key>
+          <Property Name="contractID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="parentID" Type="Int64" />
+          <Property Name="patent2ID" Type="Int64" Nullable="false" />
+          <Property Name="childID" Type="Int64" />
+          <Property Name="campID" Type="Int64" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Balance" Type="Decimal" Precision="18" Scale="0" />
+          <NavigationProperty Name="Camps" Relationship="Self.FK_Contracts_Camps" FromRole="Contracts" ToRole="Camps" />
+          <NavigationProperty Name="Children" Relationship="Self.FK_Contracts_Children" FromRole="Contracts" ToRole="Children" />
+          <NavigationProperty Name="Parents" Relationship="Self.FK_Contracts_Parents" FromRole="Contracts" ToRole="Parents" />
+          <NavigationProperty Name="Parents1" Relationship="Self.FK_Contracts_Parents1" FromRole="Contracts" ToRole="Parents" />
+          <NavigationProperty Name="Invoice" Relationship="Self.FK_Invoice_Contracts" FromRole="Contracts" ToRole="Invoice" />
+        </EntityType>
+        <EntityType Name="FoodProvider">
+          <Key>
+            <PropertyRef Name="providerID" />
+          </Key>
+          <Property Name="providerID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Capacity" Type="Int16" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="225" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Camps" Relationship="Self.CampFood" FromRole="FoodProvider" ToRole="Camps" />
+        </EntityType>
+        <EntityType Name="Invoice">
+          <Key>
+            <PropertyRef Name="invoiceID" />
+          </Key>
+          <Property Name="invoiceID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="contractID" Type="Int64" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Duedate" Type="DateTime" Precision="3" />
+          <Property Name="Paid" Type="Boolean" />
+          <NavigationProperty Name="Contracts" Relationship="Self.FK_Invoice_Contracts" FromRole="Invoice" ToRole="Contracts" />
+        </EntityType>
+        <EntityType Name="Parents">
+          <Key>
+            <PropertyRef Name="parentID" />
+          </Key>
+          <Property Name="parentID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Parent" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Contracts" Relationship="Self.FK_Contracts_Parents" FromRole="Parents" ToRole="Contracts" />
+          <NavigationProperty Name="Contracts1" Relationship="Self.FK_Contracts_Parents1" FromRole="Parents" ToRole="Contracts" />
+          <NavigationProperty Name="Children" Relationship="Self.ChildParent" FromRole="Parents" ToRole="Children" />
+        </EntityType>
+        <Association Name="FK_Camps_Address">
+          <End Role="Address" Type="Self.Address" Multiplicity="0..1" />
+          <End Role="Camps" Type="Self.Camps" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Address">
+              <PropertyRef Name="addressID" />
+            </Principal>
+            <Dependent Role="Camps">
+              <PropertyRef Name="addressID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Administration_AdminRoles">
+          <End Role="AdminRoles" Type="Self.AdminRoles" Multiplicity="0..1" />
+          <End Role="Administration" Type="Self.Administration" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AdminRoles">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="Administration">
+              <PropertyRef Name="roleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Camps">
+          <End Role="Camps" Type="Self.Camps" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Camps">
+              <PropertyRef Name="campID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="campID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Children">
+          <End Role="Children" Type="Self.Children" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Children">
+              <PropertyRef Name="childID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="childID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Parents">
+          <End Role="Parents" Type="Self.Parents" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parents">
+              <PropertyRef Name="parentID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="parentID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_Parents1">
+          <End Role="Parents" Type="Self.Parents" Multiplicity="1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Parents">
+              <PropertyRef Name="parentID" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="patent2ID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Invoice_Contracts">
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="0..1" />
+          <End Role="Invoice" Type="Self.Invoice" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Contracts">
+              <PropertyRef Name="contractID" />
+            </Principal>
+            <Dependent Role="Invoice">
+              <PropertyRef Name="contractID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="CampAdmin">
+          <End Role="Administration" Type="Self.Administration" Multiplicity="*" />
+          <End Role="Camps" Type="Self.Camps" Multiplicity="*" />
+        </Association>
+        <Association Name="CampFood">
+          <End Role="Camps" Type="Self.Camps" Multiplicity="*" />
+          <End Role="FoodProvider" Type="Self.FoodProvider" Multiplicity="*" />
+        </Association>
+        <Association Name="ChildParent">
+          <End Role="Children" Type="Self.Children" Multiplicity="*" />
+          <End Role="Parents" Type="Self.Parents" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="SummerCampEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Address" EntityType="Self.Address" />
+          <EntitySet Name="Administration" EntityType="Self.Administration" />
+          <EntitySet Name="AdminRoles" EntityType="Self.AdminRoles" />
+          <EntitySet Name="Camps" EntityType="Self.Camps" />
+          <EntitySet Name="Children" EntityType="Self.Children" />
+          <EntitySet Name="Contracts" EntityType="Self.Contracts" />
+          <EntitySet Name="FoodProvider" EntityType="Self.FoodProvider" />
+          <EntitySet Name="Invoice" EntityType="Self.Invoice" />
+          <EntitySet Name="Parents" EntityType="Self.Parents" />
+          <AssociationSet Name="FK_Camps_Address" Association="Self.FK_Camps_Address">
+            <End Role="Address" EntitySet="Address" />
+            <End Role="Camps" EntitySet="Camps" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Administration_AdminRoles" Association="Self.FK_Administration_AdminRoles">
+            <End Role="AdminRoles" EntitySet="AdminRoles" />
+            <End Role="Administration" EntitySet="Administration" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Camps" Association="Self.FK_Contracts_Camps">
+            <End Role="Camps" EntitySet="Camps" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Children" Association="Self.FK_Contracts_Children">
+            <End Role="Children" EntitySet="Children" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Parents" Association="Self.FK_Contracts_Parents">
+            <End Role="Parents" EntitySet="Parents" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_Parents1" Association="Self.FK_Contracts_Parents1">
+            <End Role="Parents" EntitySet="Parents" />
+            <End Role="Contracts" EntitySet="Contracts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Invoice_Contracts" Association="Self.FK_Invoice_Contracts">
+            <End Role="Contracts" EntitySet="Contracts" />
+            <End Role="Invoice" EntitySet="Invoice" />
+          </AssociationSet>
+          <AssociationSet Name="CampAdmin" Association="Self.CampAdmin">
+            <End Role="Administration" EntitySet="Administration" />
+            <End Role="Camps" EntitySet="Camps" />
+          </AssociationSet>
+          <AssociationSet Name="CampFood" Association="Self.CampFood">
+            <End Role="Camps" EntitySet="Camps" />
+            <End Role="FoodProvider" EntitySet="FoodProvider" />
+          </AssociationSet>
+          <AssociationSet Name="ChildParent" Association="Self.ChildParent">
+            <End Role="Children" EntitySet="Children" />
+            <End Role="Parents" EntitySet="Parents" />
+          </AssociationSet>
+          <EntitySet Name="Audit" EntityType="SummerCampModel.Audit" />
+          <EntitySet Name="UserRoles" EntityType="SummerCampModel.UserRoles" />
+          <EntitySet Name="Users" EntityType="SummerCampModel.Users" />
+          <AssociationSet Name="FK_Audit_Users" Association="SummerCampModel.FK_Audit_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Audit" EntitySet="Audit" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_UserRoles" Association="SummerCampModel.FK_Users_UserRoles">
+            <End Role="UserRoles" EntitySet="UserRoles" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Audit">
+          <Key>
+            <PropertyRef Name="ID_audit" />
+          </Key>
+          <Property Name="ID_audit" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="LogResult" Type="Boolean" Nullable="false" />
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Users" Relationship="SummerCampModel.FK_Audit_Users" FromRole="Audit" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="UserRoles">
+          <Key>
+            <PropertyRef Name="roleID" />
+          </Key>
+          <Property Name="roleID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Users" Relationship="SummerCampModel.FK_Users_UserRoles" FromRole="UserRoles" ToRole="Users" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="Username" />
+          </Key>
+          <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Surname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="passwordHash" Type="String" Nullable="false" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="Enabled" Type="Boolean" Nullable="false" />
+          <Property Name="DisabledTill" Type="DateTime" Precision="3" />
+          <Property Name="IsAdmin" Type="Boolean" />
+          <Property Name="roleID" Type="Int32" />
+          <NavigationProperty Name="Audit" Relationship="SummerCampModel.FK_Audit_Users" FromRole="Users" ToRole="Audit" />
+          <NavigationProperty Name="UserRoles" Relationship="SummerCampModel.FK_Users_UserRoles" FromRole="Users" ToRole="UserRoles" />
+        </EntityType>
+        <Association Name="FK_Audit_Users">
+          <End Type="SummerCampModel.Users" Role="Users" Multiplicity="1" />
+          <End Type="SummerCampModel.Audit" Role="Audit" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Username" />
+            </Principal>
+            <Dependent Role="Audit">
+              <PropertyRef Name="Username" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_UserRoles">
+          <End Type="SummerCampModel.UserRoles" Role="UserRoles" Multiplicity="0..1" />
+          <End Type="SummerCampModel.Users" Role="Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserRoles">
+              <PropertyRef Name="roleID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="roleID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SummerCampModelStoreContainer" CdmEntityContainer="SummerCampEntities">
+          <EntitySetMapping Name="Address">
+            <EntityTypeMapping TypeName="SummerCampModel.Address">
+              <MappingFragment StoreEntitySet="Address">
+                <ScalarProperty Name="addressID" ColumnName="addressID" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="ZipCode" ColumnName="ZipCode" />
+                <ScalarProperty Name="Address1" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Administration">
+            <EntityTypeMapping TypeName="SummerCampModel.Administration">
+              <MappingFragment StoreEntitySet="Administration">
+                <ScalarProperty Name="administrationID" ColumnName="administrationID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="roleID" ColumnName="roleID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AdminRoles">
+            <EntityTypeMapping TypeName="SummerCampModel.AdminRoles">
+              <MappingFragment StoreEntitySet="AdminRoles">
+                <ScalarProperty Name="roleID" ColumnName="roleID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Camps">
+            <EntityTypeMapping TypeName="SummerCampModel.Camps">
+              <MappingFragment StoreEntitySet="Camps">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="campID" ColumnName="campID" />
+                <ScalarProperty Name="addressID" ColumnName="addressID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Capacity" ColumnName="Capacity" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Children">
+            <EntityTypeMapping TypeName="SummerCampModel.Children">
+              <MappingFragment StoreEntitySet="Children">
+                <ScalarProperty Name="childID" ColumnName="childID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Gender" ColumnName="Gender" />
+                <ScalarProperty Name="BirthYear" ColumnName="BirthYear" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Contracts">
+            <EntityTypeMapping TypeName="SummerCampModel.Contracts">
+              <MappingFragment StoreEntitySet="Contracts">
+                <ScalarProperty Name="contractID" ColumnName="contractID" />
+                <ScalarProperty Name="parentID" ColumnName="parentID" />
+                <ScalarProperty Name="patent2ID" ColumnName="patent2ID" />
+                <ScalarProperty Name="childID" ColumnName="childID" />
+                <ScalarProperty Name="campID" ColumnName="campID" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Balance" ColumnName="Balance" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FoodProvider">
+            <EntityTypeMapping TypeName="SummerCampModel.FoodProvider">
+              <MappingFragment StoreEntitySet="FoodProvider">
+                <ScalarProperty Name="providerID" ColumnName="providerID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Capacity" ColumnName="Capacity" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Invoice">
+            <EntityTypeMapping TypeName="SummerCampModel.Invoice">
+              <MappingFragment StoreEntitySet="Invoice">
+                <ScalarProperty Name="invoiceID" ColumnName="invoiceID" />
+                <ScalarProperty Name="contractID" ColumnName="contractID" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Duedate" ColumnName="Duedate" />
+                <ScalarProperty Name="Paid" ColumnName="Paid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Parents">
+            <EntityTypeMapping TypeName="SummerCampModel.Parents">
+              <MappingFragment StoreEntitySet="Parents">
+                <ScalarProperty Name="parentID" ColumnName="parentID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Parent" ColumnName="Parent" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Phone" ColumnName="Phone" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="CampAdmin" TypeName="SummerCampModel.CampAdmin" StoreEntitySet="CampAdmin">
+            <EndProperty Name="Administration">
+              <ScalarProperty Name="administrationID" ColumnName="administrationID" />
+            </EndProperty>
+            <EndProperty Name="Camps">
+              <ScalarProperty Name="campID" ColumnName="campID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="CampFood" TypeName="SummerCampModel.CampFood" StoreEntitySet="CampFood">
+            <EndProperty Name="Camps">
+              <ScalarProperty Name="campID" ColumnName="campID" />
+            </EndProperty>
+            <EndProperty Name="FoodProvider">
+              <ScalarProperty Name="providerID" ColumnName="providerID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="ChildParent" TypeName="SummerCampModel.ChildParent" StoreEntitySet="ChildParent">
+            <EndProperty Name="Children">
+              <ScalarProperty Name="childID" ColumnName="childID" />
+            </EndProperty>
+            <EndProperty Name="Parents">
+              <ScalarProperty Name="parentID" ColumnName="parentID" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="Audit">
+            <EntityTypeMapping TypeName="SummerCampModel.Audit">
+              <MappingFragment StoreEntitySet="Audit">
+                <ScalarProperty Name="IP" ColumnName="IP" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="LogResult" ColumnName="LogResult" />
+                <ScalarProperty Name="LogTime" ColumnName="LogTime" />
+                <ScalarProperty Name="ID_audit" ColumnName="ID_audit" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="SummerCampModel.UserRoles">
+              <MappingFragment StoreEntitySet="UserRoles">
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="roleID" ColumnName="roleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="SummerCampModel.Users">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="roleID" ColumnName="roleID" />
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="DisabledTill" ColumnName="DisabledTill" />
+                <ScalarProperty Name="Enabled" ColumnName="Enabled" />
+                <ScalarProperty Name="passwordHash" ColumnName="passwordHash" />
+                <ScalarProperty Name="Surname" ColumnName="Surname" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

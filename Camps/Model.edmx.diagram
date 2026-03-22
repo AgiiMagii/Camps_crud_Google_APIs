@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8d4dde0f3e984817bab57962c92f1806" Name="Diagram1">
+        <EntityTypeShape EntityType="SummerCampModel.Address" Width="1.5" PointX="0.75" PointY="12" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Administration" Width="1.5" PointX="0.75" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.AdminRoles" Width="1.5" PointX="1.5" PointY="18.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Camps" Width="1.5" PointX="3" PointY="13.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Children" Width="1.5" PointX="0.75" PointY="3.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Contracts" Width="1.5" PointX="5.25" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.FoodProvider" Width="1.5" PointX="5.25" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Invoice" Width="1.5" PointX="7.5" PointY="5.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="SummerCampModel.Parents" Width="1.5" PointX="3" PointY="7.25" IsExpanded="true" />
+        <AssociationConnector Association="SummerCampModel.FK_Camps_Address" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Administration_AdminRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Contracts_Camps" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Contracts_Children" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Contracts_Parents" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Contracts_Parents1" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.FK_Invoice_Contracts" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.CampAdmin" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.CampFood" ManuallyRouted="false" />
+        <AssociationConnector Association="SummerCampModel.ChildParent" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="SummerCampModel.Audit" Width="1.5" PointX="7.875" PointY="1.375" />
+        <EntityTypeShape EntityType="SummerCampModel.UserRoles" Width="1.5" PointX="3.375" PointY="1.625" />
+        <EntityTypeShape EntityType="SummerCampModel.Users" Width="1.5" PointX="5.625" PointY="1" />
+        <AssociationConnector Association="SummerCampModel.FK_Audit_Users" />
+        <AssociationConnector Association="SummerCampModel.FK_Users_UserRoles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
