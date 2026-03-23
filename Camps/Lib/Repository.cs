@@ -126,5 +126,13 @@ namespace Camps.Lib
                 return false;
             }
         }
+        public DbContextTransaction BeginTransaction()
+        {
+            return _dbContext.Database.BeginTransaction();
+        }
+        public void SaveChanges()
+        {
+            _dbContext.SaveChanges();
+        }
     }
 }

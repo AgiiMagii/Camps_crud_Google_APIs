@@ -29,7 +29,7 @@ namespace Camps.Forms
             if (e.ColumnIndex == GvContracts.Columns["Delete"].Index && e.RowIndex >= 0)
             {
                 int contractId = Convert.ToInt32(GvContracts.Rows[e.RowIndex].Cells["contractID"].Value);
-                var result = MessageBox.Show("Are you sure you want to delete this contract?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult result = MessageBox.Show("Are you sure you want to delete this contract?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
                     factory.DeleteContract(contractId);

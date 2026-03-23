@@ -2,18 +2,22 @@
 using Camps.Views;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Camps.Lib
 {
     public class Factory
     {
-        Repository repo = new Repository(new SummerCampEntities());
+        private readonly Repository repo = new Repository(new SummerCampEntities());
         private static readonly Sheets _sheet = new Sheets();
         private static readonly GForms _gforms = new GForms();
+        private static readonly Random random = new Random();
         public Sheets Sheet => _sheet;
         public GForms Forms => _gforms;
         public List<UserView> MapToUserView()
@@ -155,6 +159,10 @@ namespace Camps.Lib
         {
             return repo.GetEntityByFilter<Camps>(c => c.campID == campID);
         }
+        public Camps GetCampByName(string name)
+        {
+            return repo.GetEntityByFilter<Camps>(c => c.Name == name);
+        }
         public bool DeleteUser(string username)
         {
             Users user = repo.GetEntityByFilter<Users>(u => u.Username == username);
@@ -200,7 +208,7 @@ namespace Camps.Lib
 
                     Date = x.row.ElementAtOrDefault(0)?.ToString(),
 
-                    
+
                     ChildName = x.row.ElementAtOrDefault(1)?.ToString(),
                     ChildSurname = x.row.ElementAtOrDefault(2)?.ToString(),
                     Gender = x.row.ElementAtOrDefault(3)?.ToString(),
@@ -247,10 +255,10 @@ namespace Camps.Lib
                 ChildFullName = children.FirstOrDefault(child => child.childID == c.childID) != null
                     ? $"{children.FirstOrDefault(child => child.childID == c.childID).Name} {children.FirstOrDefault(child => child.childID == c.childID).Surname}"
                     : "Unknown Child",
-                ParentFullName = parents.FirstOrDefault(parent => parent.parentID == c.parentID) != null
+                ParentFullName2 = parents.FirstOrDefault(parent => parent.parentID == c.parentID) != null
                     ? $"{parents.FirstOrDefault(parent => parent.parentID == c.parentID).Name} {parents.FirstOrDefault(parent => parent.parentID == c.parentID).Surname}"
                     : "Unknown Parent",
-                ParentFullName2 = parents.FirstOrDefault(parent => parent.parentID == c.patent2ID) != null
+                ParentFullName = parents.FirstOrDefault(parent => parent.parentID == c.patent2ID) != null
                     ? $"{parents.FirstOrDefault(parent => parent.parentID == c.patent2ID).Name} {parents.FirstOrDefault(parent => parent.parentID == c.patent2ID).Surname}"
                     : string.Empty,
                 ParentPhone = parents.FirstOrDefault(parent => parent.parentID == c.parentID)?.Phone ?? "Unknown Phone",
@@ -258,5 +266,68 @@ namespace Camps.Lib
                 Balance = c.Balance
             }).ToList();
         }
+        public void CreateContract(Children child, List<Parents> parents, Camps selectedCamp)
+        {
+            using (var transaction = repo.BeginTransaction())
+            {
+                try
+                {
+                    repo.InsertEntity(child);
+                    repo.SaveChanges();
+
+                    foreach (var parent in parents)
+                    {
+                        repo.InsertEntity(parent);
+                    }
+                    repo.SaveChanges();
+
+                    Parents mainParent = parents.FirstOrDefault(p =>
+                        !string.IsNullOrWhiteSpace(p.Email) &&
+                        !string.IsNullOrWhiteSpace(p.Address)
+                    ) ?? parents.First();
+
+                    Parents secondaryParent = parents.FirstOrDefault(p => p != mainParent);
+
+                    if (mainParent == null)
+                    {
+                        MessageBox.Show("Nav iespējams izveidot līgumu bez galvenā vecāka informācijas (e-pasts un adrese).");
+                        transaction.Rollback();
+                        return;
+                    }
+
+                    Contracts contract = new Contracts
+                    {
+                        childID = child.childID,
+                        parentID = secondaryParent?.parentID,
+                        patent2ID = mainParent.parentID,
+                        campID = selectedCamp.campID,
+                        Date = DateTime.Now,
+                        Balance = random.Next(100, 400)
+                    };
+
+                    repo.InsertEntity(contract);
+                    repo.SaveChanges();
+
+                    transaction.Commit();
+                }
+                catch (DbEntityValidationException ex)
+                {
+                    var errors = ex.EntityValidationErrors
+                        .SelectMany(e => e.ValidationErrors)
+                        .Select(e => $"{e.PropertyName}: {e.ErrorMessage}");
+                    MessageBox.Show(string.Join("\n", errors));
+
+                    transaction.Rollback();
+                    throw;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error: {ex.Message}");
+                    transaction.Rollback();
+                    throw;
+                }
+            }
+        }
     }
 }
+

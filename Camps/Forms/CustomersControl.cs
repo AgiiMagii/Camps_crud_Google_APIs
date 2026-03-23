@@ -24,15 +24,21 @@ namespace Camps.Forms
         public CustomersControl()
         {
             InitializeComponent();
-            
+
+            SuspendLayout();
+
             splitContainer2.Dock = DockStyle.Fill;
             splitContainer2.FixedPanel = FixedPanel.Panel2;
-            splitContainer2.Panel2MinSize = 300;
+            splitContainer2.Panel2MinSize = 200;
+            splitContainer2.IsSplitterFixed = false;
             splitContainer2.Panel1.AutoScroll = true;
             splitContainer2.Panel2.AutoScroll = true;
             splitContainer2.Panel2Collapsed = true;
-        }
+            splitContainer2.ResumeLayout(false);
 
+            ResumeLayout(true);
+        }
+        
         public void Add()
         {
             splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
@@ -60,6 +66,9 @@ namespace Camps.Forms
 
             CbGender.DataSource = Enum.GetValues(typeof(Enums.Gender));
             CbGender.SelectedIndex = -1;
+
+            CbParent2.DataSource = Enum.GetValues(typeof(Enums.Parents));
+            CbParent2.SelectedIndex = -1;
         }
         public void LoadData()
         {
@@ -81,12 +90,9 @@ namespace Camps.Forms
                 MessageBox.Show($"Failed to load data: {ex.Message}");
             }
         }
-        private void MapSheetToClasses()
-        {
-            
-        }
         private void GvSheetData_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            helper.ClearForm(splitContainer2.Panel2.Controls);
             if (e.RowIndex >= 0)
             {
                 int sheetDataId = Convert.ToInt32(GvSheetData.Rows[e.RowIndex].Cells["RowIndex"].Value);
@@ -129,6 +135,25 @@ namespace Camps.Forms
                             throw new Exception("Unknown parent type");
                     }
 
+                    Enums.Parents parents2;
+
+                    switch (selectedData.ParentType1)
+                    {
+                        case "Māte":
+                            parents2 = Enums.Parents.Mother;
+                            break;
+                        case "Tēvs":
+                            parents2 = Enums.Parents.Father;
+                            break;
+                        case "Aizbildnis":
+                            parents2 = Enums.Parents.Guardian;
+                            break;
+                        default : 
+                            parents2 = (Enums.Parents)(-1); // Default value, can be adjusted as needed
+                            break;
+
+                    }
+
                     CbCamp.SelectedItem = CbCamp.Items.Cast<Camps>().FirstOrDefault(c => c.Name == selectedData.Camp);
 
                     TxtChildName.Text = selectedData.ChildName.ToString();
@@ -144,7 +169,82 @@ namespace Camps.Forms
                     TxtPhone.Text = selectedData.ParentPhone.ToString();
                     TxtEmail.Text = selectedData.ParentEmail.ToString();
                     TxtAddress.Text = selectedData.ParentAddress.ToString();
+
+                    CbParent2.SelectedItem = parents2;
+                    TxtParentName2.Text = selectedData.ParentName1 ?? string.Empty;
+                    TxtParentSur2.Text = selectedData.ParentSurname1 ?? string.Empty;
+                    TxtPhone2.Text = selectedData.ParentPhone1 ?? string.Empty;
                 }
+            }
+        }
+        private string ConvertGenderForDb(string gender)
+        {
+            switch (gender)
+            {
+                case "Male":
+                    return "M";
+                case "Female":
+                    return "F";
+                default:
+                    return null;
+            }
+        }
+        private Children CreateChild()
+        {
+            return new Children
+            {
+                Name = TxtChildName.Text,
+                Surname = TxtChildSurname.Text,
+                Gender = ConvertGenderForDb(CbGender.SelectedItem?.ToString()),
+                BirthYear = CbBirthYear.SelectedItem != null ? (short?)Convert.ToInt16(CbBirthYear.SelectedItem) : null
+            };
+        }
+        private List<Parents> CreateParents()
+        {
+            List<Parents> parentsList = new List<Parents>();
+            if (CbParent.SelectedItem != null)
+            {
+                parentsList.Add(new Parents
+                {
+                    Name = TxtParentName.Text,
+                    Surname = TxtParentSurname.Text,
+                    Phone = TxtPhone.Text,
+                    Email = TxtEmail.Text,
+                    Address = TxtAddress.Text,
+                    Parent = CbParent.SelectedItem.ToString()
+                });
+            }
+            if (!string.IsNullOrWhiteSpace(TxtPhone2.Text))
+            {
+                parentsList.Add(new Parents
+                {
+                    Name = TxtParentName2.Text,
+                    Surname = TxtParentSur2.Text,
+                    Phone = TxtPhone2.Text,
+                    Parent = CbParent2.SelectedItem.ToString()
+                });
+            }
+            return parentsList;
+        }
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            Children child = CreateChild();
+            List<Parents> parents = CreateParents();
+            Camps selectedCamp = CbCamp.SelectedItem as Camps;
+            if (selectedCamp != null)
+            {
+                factory.GetCampByName(selectedCamp.Name);
+            }
+            if (child != null && parents.Count > 0 && selectedCamp != null) 
+            {
+                factory.CreateContract(child, parents, selectedCamp);
+                helper.ClearForm(splitContainer2.Panel2.Controls);
+                splitContainer2.Panel2Collapsed = true;
+                MessageBox.Show("Data saved successfully!");
+            }
+            else
+            { 
+                MessageBox.Show("Please fill in all required fields and select a camp.");
             }
         }
     }

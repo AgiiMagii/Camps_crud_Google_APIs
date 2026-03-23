@@ -27,6 +27,7 @@ namespace Camps
                 Multiline = true
 
             };
+            tabMain.SelectedIndexChanged += (s, e) => ActivateActionButtons();
             panelMain.Controls.Add(tabMain);
         }
 
@@ -169,17 +170,19 @@ namespace Camps
 
         private void ActivateActionButtons()
         {
-            if (tabMain.SelectedTab != null)
-            {
-                UserControl control = tabMain.SelectedTab.Controls.OfType<UserControl>().FirstOrDefault();
-                BtnAdd.Enabled = control is IAddable;
-                BtnDelete.Enabled = control is IDeletable;
-            }
-            else
+            TabPage tab = tabMain.SelectedTab;
+
+            if (tab == null)
             {
                 BtnAdd.Enabled = false;
                 BtnDelete.Enabled = false;
+                return;
             }
+
+            UserControl control = tab.Controls.OfType<UserControl>().FirstOrDefault();
+
+            BtnAdd.Enabled = control is IAddable;
+            BtnDelete.Enabled = control is IDeletable;
         }
 
         private void BtnLogOut_Click(object sender, EventArgs e)
