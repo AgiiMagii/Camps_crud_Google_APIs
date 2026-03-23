@@ -9,25 +9,46 @@ namespace Camps.Lib
 {
     public class Helper
     {
-        public void ReloadGrid<T>(DataGridView grid, List<T> items, bool IsDelete = false) where T : class
+        public void ReloadGrid<T>(DataGridView grid, List<T> items, bool IsDelete = false, bool IsUpdate = false) where T : class
         {
             grid.DataSource = null;
             grid.DataSource = items;
 
             if (IsDelete)
             {
-                if (!grid.Columns.Contains("Delete"))
+                if (grid.Columns.Contains("Delete"))
                 {
-                    DataGridViewButtonColumn btn = new DataGridViewButtonColumn
-                    {
-                        Name = "Delete",
-                        HeaderText = "Action",
-                        Text = "Delete",
-                        UseColumnTextForButtonValue = true,
-                        AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
-                    };
-                    grid.Columns.Add(btn);
+                    grid.Columns.Remove("Delete");
                 }
+
+                DataGridViewButtonColumn btn = new DataGridViewButtonColumn
+                {
+                    Name = "Delete",
+                    HeaderText = "Action",
+                    Text = "Delete",
+                    UseColumnTextForButtonValue = true,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                };
+
+                grid.Columns.Add(btn);
+                btn.DisplayIndex = grid.Columns.Count - 1;
+            }
+            if (IsUpdate)
+            {
+                if (grid.Columns.Contains("Update"))
+                {
+                    grid.Columns.Remove("Update");
+                }
+                DataGridViewButtonColumn btn = new DataGridViewButtonColumn
+                {
+                    Name = "Update",
+                    HeaderText = "Action",
+                    Text = "Update",
+                    UseColumnTextForButtonValue = true,
+                    AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+                };
+                grid.Columns.Add(btn);
+                btn.DisplayIndex = grid.Columns.Count - 1;
             }
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
@@ -38,6 +59,7 @@ namespace Camps.Lib
             List<T> pagedItems = items.Skip(startIndex).Take(pageSize).ToList();
             return pagedItems;
         }
+
         public void ClearForm(Control.ControlCollection controls)
         {
             foreach (Control control in controls)

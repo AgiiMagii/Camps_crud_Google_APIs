@@ -61,6 +61,16 @@ namespace Camps.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Aniket_Suvarna_Box_Regular_Bx_refresh_64 {
+            get {
+                object obj = ResourceManager.GetObject("Aniket-Suvarna-Box-Regular-Bx-refresh.64", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Camp_Fire {

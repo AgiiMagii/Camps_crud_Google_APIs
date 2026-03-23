@@ -186,6 +186,8 @@
     </Compile>
     <Compile Include="Interfaces\IAddable.cs" />
     <Compile Include="Interfaces\IDeletable.cs" />
+    <Compile Include="Interfaces\INavigate.cs" />
+    <Compile Include="Interfaces\IRefreshable.cs" />
     <Compile Include="Invoice.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
@@ -228,6 +230,8 @@
     </Compile>
     <Compile Include="Views\CampsView.cs" />
     <Compile Include="Views\ContractsView.cs" />
+    <Compile Include="Views\ParentsView.cs" />
+    <Compile Include="Views\ParticipiantView.cs" />
     <Compile Include="Views\SheetDataView.cs" />
     <Compile Include="Views\UserView.cs" />
     <EmbeddedResource Include="Forms\AddCamp.resx">

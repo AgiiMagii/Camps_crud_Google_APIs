@@ -36,8 +36,10 @@
             this.BtnAdd = new System.Windows.Forms.Button();
             this.BtnDelete = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.BtnFvd = new System.Windows.Forms.Button();
+            this.BtnBack = new System.Windows.Forms.Button();
+            this.BtnRefresh = new System.Windows.Forms.Button();
             this.BtnSettings = new System.Windows.Forms.Button();
-            this.BtnLogOut = new System.Windows.Forms.Button();
             this.BtnUsers = new System.Windows.Forms.Button();
             this.BtnCustomer = new System.Windows.Forms.Button();
             this.BtnCamp = new System.Windows.Forms.Button();
@@ -47,8 +49,11 @@
             this.profileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangePasswordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.logOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.panelMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.flowLayoutPanel2.SuspendLayout();
             this.CmSettings.SuspendLayout();
             this.SuspendLayout();
@@ -82,8 +87,9 @@
             this.flowLayoutPanel1.Controls.Add(this.BtnAdd);
             this.flowLayoutPanel1.Controls.Add(this.BtnDelete);
             this.flowLayoutPanel1.Controls.Add(this.panel1);
+            this.flowLayoutPanel1.Controls.Add(this.BtnRefresh);
+            this.flowLayoutPanel1.Controls.Add(this.flowLayoutPanel3);
             this.flowLayoutPanel1.Controls.Add(this.BtnSettings);
-            this.flowLayoutPanel1.Controls.Add(this.BtnLogOut);
             this.flowLayoutPanel1.Location = new System.Drawing.Point(422, 3);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
             this.flowLayoutPanel1.Size = new System.Drawing.Size(371, 40);
@@ -118,32 +124,56 @@
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.BtnFvd);
+            this.panel1.Controls.Add(this.BtnBack);
             this.panel1.Location = new System.Drawing.Point(83, 3);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(155, 30);
             this.panel1.TabIndex = 10;
             // 
+            // BtnFvd
+            // 
+            this.BtnFvd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnFvd.Location = new System.Drawing.Point(85, 3);
+            this.BtnFvd.Name = "BtnFvd";
+            this.BtnFvd.Size = new System.Drawing.Size(67, 23);
+            this.BtnFvd.TabIndex = 1;
+            this.BtnFvd.Text = ">>";
+            this.BtnFvd.UseVisualStyleBackColor = true;
+            this.BtnFvd.Click += new System.EventHandler(this.BtnFvd_Click);
+            // 
+            // BtnBack
+            // 
+            this.BtnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnBack.Location = new System.Drawing.Point(3, 3);
+            this.BtnBack.Name = "BtnBack";
+            this.BtnBack.Size = new System.Drawing.Size(67, 23);
+            this.BtnBack.TabIndex = 0;
+            this.BtnBack.Text = "<<";
+            this.BtnBack.UseVisualStyleBackColor = true;
+            this.BtnBack.Click += new System.EventHandler(this.BtnBack_Click);
+            // 
+            // BtnRefresh
+            // 
+            this.BtnRefresh.BackgroundImage = global::Camps.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_refresh_64;
+            this.BtnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.BtnRefresh.Location = new System.Drawing.Point(244, 3);
+            this.BtnRefresh.Name = "BtnRefresh";
+            this.BtnRefresh.Size = new System.Drawing.Size(33, 30);
+            this.BtnRefresh.TabIndex = 4;
+            this.BtnRefresh.UseVisualStyleBackColor = true;
+            this.BtnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
+            // 
             // BtnSettings
             // 
             this.BtnSettings.BackgroundImage = global::Camps.Properties.Resources.Icons8_Windows_8_Programming_Settings_3_64;
             this.BtnSettings.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.BtnSettings.Location = new System.Drawing.Point(244, 3);
+            this.BtnSettings.Location = new System.Drawing.Point(331, 3);
             this.BtnSettings.Name = "BtnSettings";
             this.BtnSettings.Size = new System.Drawing.Size(33, 30);
             this.BtnSettings.TabIndex = 3;
             this.BtnSettings.UseVisualStyleBackColor = true;
             this.BtnSettings.Click += new System.EventHandler(this.BtnSettings_Click);
-            // 
-            // BtnLogOut
-            // 
-            this.BtnLogOut.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.BtnLogOut.Location = new System.Drawing.Point(283, 3);
-            this.BtnLogOut.Name = "BtnLogOut";
-            this.BtnLogOut.Size = new System.Drawing.Size(75, 23);
-            this.BtnLogOut.TabIndex = 11;
-            this.BtnLogOut.Text = "Log Out";
-            this.BtnLogOut.UseVisualStyleBackColor = true;
-            this.BtnLogOut.Click += new System.EventHandler(this.BtnLogOut_Click);
             // 
             // BtnUsers
             // 
@@ -210,7 +240,8 @@
             // 
             this.profileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.editProfileToolStripMenuItem,
-            this.ChangePasswordToolStripMenuItem});
+            this.ChangePasswordToolStripMenuItem,
+            this.logOutToolStripMenuItem});
             this.profileToolStripMenuItem.Name = "profileToolStripMenuItem";
             this.profileToolStripMenuItem.Size = new System.Drawing.Size(108, 22);
             this.profileToolStripMenuItem.Text = "Profile";
@@ -227,6 +258,20 @@
             this.ChangePasswordToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.ChangePasswordToolStripMenuItem.Text = "Change password";
             this.ChangePasswordToolStripMenuItem.Click += new System.EventHandler(this.ChangePasswordToolStripMenuItem_Click);
+            // 
+            // logOutToolStripMenuItem
+            // 
+            this.logOutToolStripMenuItem.Name = "logOutToolStripMenuItem";
+            this.logOutToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
+            this.logOutToolStripMenuItem.Text = "Log out";
+            this.logOutToolStripMenuItem.Click += new System.EventHandler(this.logOutToolStripMenuItem_Click);
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(283, 3);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(42, 30);
+            this.flowLayoutPanel3.TabIndex = 3;
             // 
             // MainForm
             // 
@@ -245,6 +290,7 @@
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.flowLayoutPanel2.ResumeLayout(false);
             this.CmSettings.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -264,12 +310,16 @@
         private System.Windows.Forms.Button BtnDelete;
         private System.Windows.Forms.Label LblCloseTab;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button BtnLogOut;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.ContextMenuStrip CmSettings;
         private System.Windows.Forms.ToolStripMenuItem profileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem editProfileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ChangePasswordToolStripMenuItem;
+        private System.Windows.Forms.Button BtnFvd;
+        private System.Windows.Forms.Button BtnBack;
+        private System.Windows.Forms.ToolStripMenuItem logOutToolStripMenuItem;
+        private System.Windows.Forms.Button BtnRefresh;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
     }
 }
 

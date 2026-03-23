@@ -41,7 +41,14 @@ namespace Camps.Forms
         
         public void Add()
         {
-            splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
+            if (tabControl.SelectedTab == tabPage1)
+            {
+
+            } 
+            else if (tabControl.SelectedTab == tabPage2)
+            {
+                splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
+            }
         }
         private void LoadComboBoxes()
         {
@@ -72,6 +79,7 @@ namespace Camps.Forms
         }
         public void LoadData()
         {
+            helper.ReloadGrid(GvParticipiants, factory.MapToParticipiantView());
             LoadComboBoxes();
         }
         public async Task LoadDataAsync()
@@ -246,6 +254,17 @@ namespace Camps.Forms
             { 
                 MessageBox.Show("Please fill in all required fields and select a camp.");
             }
+        }
+        private void GvParticipiants_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            GvParentDetails.DataSource = null;
+            if (e.RowIndex >= 0)
+            {
+                int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
+                helper.ReloadGrid(GvParentDetails, factory.MapToParentsView(childId));
+                
+            }
+
         }
     }
 }

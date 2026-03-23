@@ -3,6 +3,7 @@ using Camps.Views;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity.Validation;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -49,6 +50,33 @@ namespace Camps.Lib
 
             }).ToList();
 
+        }
+        public List<ParticipiantView> MapToParticipiantView()
+        {
+            return repo.GetEntities<Children>()
+                .Select(child => new ParticipiantView
+                {
+                    childID = child.childID,
+                    Name = child.Name,
+                    Surname = child.Surname,
+                    Gender = child.Gender,
+                    BirthYear = child.BirthYear,
+
+                }).ToList();
+        }
+        public List<ParentsView> MapToParentsView(long childID)
+        {
+            List<Parents> parents = GetParentsByChildID(childID);
+            return parents.Select(parent => new ParentsView
+            {
+                parentID = parent.parentID,
+                Name = parent.Name,
+                Surname = parent.Surname,
+                Parent = parent.Parent,
+                Email = parent.Email ?? string.Empty,
+                Phone = parent.Phone,
+                Address = parent.Address ?? string.Empty
+            }).ToList();
         }
         public void UpdateUser(UserView userView)
         {
@@ -137,6 +165,29 @@ namespace Camps.Lib
         public List<Camps> GetCamps()
         {
             return repo.GetEntities<Camps>();
+        }
+        public List<Parents> GetParentsByChildID(long childID)
+        {
+            var parents = repo.GetEntities<Parents>()
+                .Join(repo.GetEntities<Contracts>(),
+                      p => p.parentID,
+                      c => c.parentID,
+                      (p, c) => new { Parent = p, Contract = c })
+                .Where(pc => pc.Contract.childID == childID)
+                .Select(pc => pc.Parent)
+                .ToList();
+
+            var parents2 = repo.GetEntities<Parents>()
+                .Join(repo.GetEntities<Contracts>(),
+                      p => p.parentID,
+                      c => c.patent2ID,
+                      (p, c) => new { Parent = p, Contract = c })
+                .Where(pc => pc.Contract.childID == childID)
+                .Select(pc => pc.Parent)
+                .ToList();
+
+            // Apvienojam un noņemam dublētus
+            return parents.Concat(parents2).Distinct().ToList();
         }
         public Address GetAddressByID(long? addressID)
         {
@@ -327,6 +378,48 @@ namespace Camps.Lib
                     throw;
                 }
             }
+        }
+        public List<ContractsView> GetTContracts(int pageSize, int pageNr)
+        {
+            try
+            {
+                return repo.GetEntities<Contracts>()
+                    .OrderBy(c => c.contractID)
+                    .Skip((pageNr - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(c => new ContractsView
+                    {
+                        contractID = c.contractID,
+                        CampName = repo.GetEntityByFilter<Camps>(camp => camp.campID == c.campID)?.Name ?? "Unknown Camp",
+                        ChildFullName = repo.GetEntityByFilter<Children>(child => child.childID == c.childID) != null
+                            ? $"{repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Name} {repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Surname}"
+                            : "Unknown Child",
+                        ParentFullName2 = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID) != null
+                            ? $"{repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Name} {repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Surname}"
+                            : "Unknown Parent",
+                        ParentFullName = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID) != null
+                            ? $"{repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID).Name} {repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID).Surname}"
+                            : string.Empty,
+                        ParentPhone = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID)?.Phone ?? "Unknown Phone",
+                        Date = c.Date,
+                        Balance = c.Balance
+                    })
+                    .ToList();
+
+            }
+            catch
+            {
+                return new List<ContractsView>();
+            }
+
+        }
+        public int GetTotalContractCount()
+        {
+            try
+            {
+                return repo.GetCount<Contracts>();
+            }
+            catch { return 0; }
         }
     }
 }

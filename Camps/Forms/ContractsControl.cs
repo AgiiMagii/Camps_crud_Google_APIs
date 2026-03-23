@@ -1,4 +1,6 @@
-﻿using Camps.Lib;
+﻿using Camps.Interfaces;
+using Camps.Lib;
+using Google.Apis.Sheets.v4.Data;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,17 +13,42 @@ using System.Windows.Forms;
 
 namespace Camps.Forms
 {
-    public partial class ContractsControl : UserControl
+    public partial class ContractsControl : UserControl, INavigate
     {
         private readonly Helper helper = new Helper();
         private readonly Factory factory = new Factory();
+        private int totalContracts = 0;
+        private int pageSize = 5;
+        private int currentPage = 1;
         public ContractsControl()
         {
             InitializeComponent();
         }
+
+        public void Back()
+        {
+            if (currentPage > 1)
+            {
+                currentPage--;
+                LoadData();
+            }
+        }
+
+        public void Forward()
+        {
+            int totalPages = (int)Math.Ceiling((double)totalContracts / pageSize);
+
+            if (currentPage < totalPages)
+            {
+                currentPage++;
+                LoadData();
+            }
+        }
+
         public void LoadData()
         {
-            helper.ReloadGrid(GvContracts, factory.MapToContractsView(), true);
+            totalContracts = factory.GetTotalContractCount();
+            helper.ReloadGrid(GvContracts, factory.GetTContracts(pageSize, currentPage), true);
         }
 
         private void GvContracts_CellContentClick(object sender, DataGridViewCellEventArgs e)

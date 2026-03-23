@@ -146,6 +146,7 @@
             this.GvParticipiants.Name = "GvParticipiants";
             this.GvParticipiants.Size = new System.Drawing.Size(1130, 188);
             this.GvParticipiants.TabIndex = 0;
+            this.GvParticipiants.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GvParticipiants_RowHeaderMouseClick);
             // 
             // GvParentDetails
             // 

@@ -176,6 +176,9 @@ namespace Camps
             {
                 BtnAdd.Enabled = false;
                 BtnDelete.Enabled = false;
+                BtnBack.Enabled = false;
+                BtnFvd.Enabled = false;
+                BtnRefresh.Enabled = false;
                 return;
             }
 
@@ -183,15 +186,9 @@ namespace Camps
 
             BtnAdd.Enabled = control is IAddable;
             BtnDelete.Enabled = control is IDeletable;
-        }
-
-        private void BtnLogOut_Click(object sender, EventArgs e)
-        {
-            Session.CurrentUser = null;
-            tabMain.TabPages.Clear();
-            Login loginForm = Application.OpenForms.OfType<Login>().FirstOrDefault();
-            loginForm?.Show();
-            this.Close();
+            BtnBack.Enabled = control is INavigate back;
+            BtnFvd.Enabled = control is INavigate forward;
+            BtnRefresh.Enabled = control is IRefreshable refreshable;
         }
 
         private void BtnSettings_Click(object sender, EventArgs e)
@@ -219,6 +216,51 @@ namespace Camps
             OpenTab("Contracts", contractsControl);
             ShowLabelCloseTab();
             contractsControl.LoadData();
+        }
+
+        private void BtnBack_Click(object sender, EventArgs e)
+        {
+            if (tabMain.SelectedTab != null)
+            {
+                UserControl control = tabMain.SelectedTab.Controls.OfType<UserControl>().FirstOrDefault();
+                if (control is INavigate back)
+                {
+                    back.Back();
+                }
+            }
+        }
+
+        private void BtnFvd_Click(object sender, EventArgs e)
+        {
+            if (tabMain.SelectedTab != null)
+            {
+                UserControl control = tabMain.SelectedTab.Controls.OfType<UserControl>().FirstOrDefault();
+                if (control is INavigate forward)
+                {
+                    forward.Forward();
+                }
+            }
+        }
+
+        private void logOutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Session.CurrentUser = null;
+            tabMain.TabPages.Clear();
+            Login loginForm = Application.OpenForms.OfType<Login>().FirstOrDefault();
+            loginForm?.Show();
+            this.Close();
+        }
+
+        private void BtnRefresh_Click(object sender, EventArgs e)
+        {
+            if (tabMain.SelectedTab != null)
+            {
+                UserControl control = tabMain.SelectedTab.Controls.OfType<UserControl>().FirstOrDefault();
+                if (control is IRefreshable refreshable)
+                {
+                    refreshable.Refresh();
+                }
+            }
         }
     }
 }

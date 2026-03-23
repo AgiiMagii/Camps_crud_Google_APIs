@@ -134,5 +134,17 @@ namespace Camps.Lib
         {
             _dbContext.SaveChanges();
         }
+
+        public int GetCount<TEntity>() where TEntity : class
+        {
+            try
+            {
+                return _dbContext.Set<TEntity>().Count();
+            }
+            catch
+            {
+                throw;
+            }
+        }
     }
 }

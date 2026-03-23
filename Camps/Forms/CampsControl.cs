@@ -13,8 +13,8 @@ namespace Camps.Forms
 {
     public partial class CampsControl : UserControl, IAddable, IDeletable
     {
-        Factory factory = new Factory();
-        Helper helper = new Helper();
+        private readonly Factory factory = new Factory();
+        private readonly Helper helper = new Helper();
         public CampsControl()
         {
             InitializeComponent();
