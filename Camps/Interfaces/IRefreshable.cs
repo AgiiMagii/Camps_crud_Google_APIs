@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Camps.Interfaces
 {
-    internal interface IRefreshable
+    public interface IRefreshable
     {
-        void Refresh();
+        void Refreshdata();
     }
 }

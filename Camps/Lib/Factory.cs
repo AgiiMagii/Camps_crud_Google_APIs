@@ -317,7 +317,7 @@ namespace Camps.Lib
                 Balance = c.Balance
             }).ToList();
         }
-        public void CreateContract(Children child, List<Parents> parents, Camps selectedCamp)
+        public void CreateContract(Children child, List<Parents> parents, Camps selectedCamp, SheetDataView sheetData = null)
         {
             using (var transaction = repo.BeginTransaction())
             {
@@ -360,6 +360,17 @@ namespace Camps.Lib
                     repo.SaveChanges();
 
                     transaction.Commit();
+                    if (sheetData != null)
+                    {
+                        // async var saukt šeit vai service līmenī
+                        Task.Run(async () =>
+                        {
+                            await Sheet.MarkRowAsProcessed(
+                                "1lUzhU0ZjLNwUYT-tuW9aNQkdR1219c16Q4JAetMx2EQ",
+                                "FormResponses",
+                                sheetData.RowIndex);
+                        });
+                    }
                 }
                 catch (DbEntityValidationException ex)
                 {
@@ -420,6 +431,13 @@ namespace Camps.Lib
                 return repo.GetCount<Contracts>();
             }
             catch { return 0; }
+        }
+        public async Task MarkProcessedRows(int rowIndex)
+        {
+            await Sheet.MarkRowAsProcessed(
+                "1ySwP3-xn8RUxH7NenO-gZ-q_FhhZZ1_h9l3e9hRKfzg",
+                "Form Responses 1",
+                rowIndex);
         }
     }
 }

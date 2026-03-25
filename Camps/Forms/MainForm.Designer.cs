@@ -39,6 +39,7 @@
             this.BtnFvd = new System.Windows.Forms.Button();
             this.BtnBack = new System.Windows.Forms.Button();
             this.BtnRefresh = new System.Windows.Forms.Button();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.BtnSettings = new System.Windows.Forms.Button();
             this.BtnUsers = new System.Windows.Forms.Button();
             this.BtnCustomer = new System.Windows.Forms.Button();
@@ -50,7 +51,6 @@
             this.editProfileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ChangePasswordToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.logOutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
             this.panelMain.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -133,6 +133,7 @@
             // 
             // BtnFvd
             // 
+            this.BtnFvd.Enabled = false;
             this.BtnFvd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnFvd.Location = new System.Drawing.Point(85, 3);
             this.BtnFvd.Name = "BtnFvd";
@@ -144,6 +145,7 @@
             // 
             // BtnBack
             // 
+            this.BtnBack.Enabled = false;
             this.BtnBack.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BtnBack.Location = new System.Drawing.Point(3, 3);
             this.BtnBack.Name = "BtnBack";
@@ -157,12 +159,20 @@
             // 
             this.BtnRefresh.BackgroundImage = global::Camps.Properties.Resources.Aniket_Suvarna_Box_Regular_Bx_refresh_64;
             this.BtnRefresh.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.BtnRefresh.Enabled = false;
             this.BtnRefresh.Location = new System.Drawing.Point(244, 3);
             this.BtnRefresh.Name = "BtnRefresh";
             this.BtnRefresh.Size = new System.Drawing.Size(33, 30);
             this.BtnRefresh.TabIndex = 4;
             this.BtnRefresh.UseVisualStyleBackColor = true;
             this.BtnRefresh.Click += new System.EventHandler(this.BtnRefresh_Click);
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(283, 3);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(42, 30);
+            this.flowLayoutPanel3.TabIndex = 3;
             // 
             // BtnSettings
             // 
@@ -265,13 +275,6 @@
             this.logOutToolStripMenuItem.Size = new System.Drawing.Size(168, 22);
             this.logOutToolStripMenuItem.Text = "Log out";
             this.logOutToolStripMenuItem.Click += new System.EventHandler(this.logOutToolStripMenuItem_Click);
-            // 
-            // flowLayoutPanel3
-            // 
-            this.flowLayoutPanel3.Location = new System.Drawing.Point(283, 3);
-            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
-            this.flowLayoutPanel3.Size = new System.Drawing.Size(42, 30);
-            this.flowLayoutPanel3.TabIndex = 3;
             // 
             // MainForm
             // 

@@ -186,9 +186,9 @@ namespace Camps
 
             BtnAdd.Enabled = control is IAddable;
             BtnDelete.Enabled = control is IDeletable;
-            BtnBack.Enabled = control is INavigate back;
-            BtnFvd.Enabled = control is INavigate forward;
-            BtnRefresh.Enabled = control is IRefreshable refreshable;
+            BtnBack.Enabled = control is INavigate;
+            BtnFvd.Enabled = control is INavigate;
+            BtnRefresh.Enabled = control is IRefreshable;
         }
 
         private void BtnSettings_Click(object sender, EventArgs e)
@@ -256,9 +256,9 @@ namespace Camps
             if (tabMain.SelectedTab != null)
             {
                 UserControl control = tabMain.SelectedTab.Controls.OfType<UserControl>().FirstOrDefault();
-                if (control is IRefreshable refreshable)
+                if (control is IRefreshable refresh)
                 {
-                    refreshable.Refresh();
+                    refresh.Refreshdata();
                 }
             }
         }

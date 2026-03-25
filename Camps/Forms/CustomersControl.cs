@@ -16,11 +16,12 @@ using System.Windows.Forms;
 
 namespace Camps.Forms
 {
-    public partial class CustomersControl : UserControl, IAddable
+    public partial class CustomersControl : UserControl, IAddable, IRefreshable
     {
         private readonly Factory factory = new Factory();
         private readonly Helper helper = new Helper();
         private List<SheetDataView> sheetData;
+        private SheetDataView selectedSheetRow = null;
         public CustomersControl()
         {
             InitializeComponent();
@@ -38,7 +39,6 @@ namespace Camps.Forms
 
             ResumeLayout(true);
         }
-        
         public void Add()
         {
             if (tabControl.SelectedTab == tabPage1)
@@ -88,7 +88,7 @@ namespace Camps.Forms
             {
                 sheetData = await factory.GetSheetDataAsync(
                     "1ySwP3-xn8RUxH7NenO-gZ-q_FhhZZ1_h9l3e9hRKfzg",
-                    "'Form Responses 1'!A1:T"
+                    "'Form Responses 1'!A1:U"
                 );
 
                 helper.ReloadGrid(GvSheetData, sheetData);
@@ -105,6 +105,7 @@ namespace Camps.Forms
             {
                 int sheetDataId = Convert.ToInt32(GvSheetData.Rows[e.RowIndex].Cells["RowIndex"].Value);
                 SheetDataView selectedData = sheetData.FirstOrDefault(s => s.RowIndex == sheetDataId);
+                selectedSheetRow = selectedData;
                 if (!splitContainer2.Panel2Collapsed)
                 {
                     Enums.Gender gender;
@@ -234,7 +235,7 @@ namespace Camps.Forms
             }
             return parentsList;
         }
-        private void BtnSave_Click(object sender, EventArgs e)
+        private async void BtnSave_Click(object sender, EventArgs e)
         {
             Children child = CreateChild();
             List<Parents> parents = CreateParents();
@@ -246,6 +247,11 @@ namespace Camps.Forms
             if (child != null && parents.Count > 0 && selectedCamp != null) 
             {
                 factory.CreateContract(child, parents, selectedCamp);
+                if (selectedSheetRow != null)
+                {
+                    await factory.MarkProcessedRows(selectedSheetRow.RowIndex);
+                }
+                selectedSheetRow = null;
                 helper.ClearForm(splitContainer2.Panel2.Controls);
                 splitContainer2.Panel2Collapsed = true;
                 MessageBox.Show("Data saved successfully!");
@@ -262,9 +268,18 @@ namespace Camps.Forms
             {
                 int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
                 helper.ReloadGrid(GvParentDetails, factory.MapToParentsView(childId));
-                
             }
-
+        }
+        public void Refreshdata()
+        {
+            if (tabControl.SelectedTab == tabPage1)
+            {
+                LoadData();
+            }
+            else if (tabControl.SelectedTab == tabPage2)
+            {
+                _ = LoadDataAsync();
+            }
         }
     }
 }
