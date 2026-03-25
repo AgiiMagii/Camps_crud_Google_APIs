@@ -25,7 +25,10 @@ namespace Camps.Forms
         public CustomersControl()
         {
             InitializeComponent();
-
+            LayoutSettings();
+        }
+        private void LayoutSettings()
+        {
             SuspendLayout();
 
             splitContainer2.Dock = DockStyle.Fill;
@@ -35,6 +38,8 @@ namespace Camps.Forms
             splitContainer2.Panel1.AutoScroll = true;
             splitContainer2.Panel2.AutoScroll = true;
             splitContainer2.Panel2Collapsed = true;
+            splitContainer1.Panel2Collapsed = true;
+
             splitContainer2.ResumeLayout(false);
 
             ResumeLayout(true);
@@ -43,7 +48,7 @@ namespace Camps.Forms
         {
             if (tabControl.SelectedTab == tabPage1)
             {
-
+                
             } 
             else if (tabControl.SelectedTab == tabPage2)
             {
@@ -250,6 +255,7 @@ namespace Camps.Forms
                 if (selectedSheetRow != null)
                 {
                     await factory.MarkProcessedRows(selectedSheetRow.RowIndex);
+                    _ = LoadDataAsync();
                 }
                 selectedSheetRow = null;
                 helper.ClearForm(splitContainer2.Panel2.Controls);
@@ -268,17 +274,61 @@ namespace Camps.Forms
             {
                 int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
                 helper.ReloadGrid(GvParentDetails, factory.MapToParentsView(childId));
+                splitContainer1.Panel2Collapsed = false;
             }
         }
         public void Refreshdata()
         {
             if (tabControl.SelectedTab == tabPage1)
             {
+                if (GvParticipiants.SelectedRows.Count > 0)
+                {
+                    GvParentDetails.DataSource = null;
+                    splitContainer1.Panel2Collapsed = true;
+                }
+                
                 LoadData();
+
             }
             else if (tabControl.SelectedTab == tabPage2)
             {
                 _ = LoadDataAsync();
+            }
+        }
+        private void GvParticipiants_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            using (EditParticipiant edit = new EditParticipiant())
+            {
+                if (e.RowIndex >= 0)
+                {
+                    int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
+                    Children child = factory.GetChildByID(childId);
+                    edit.LoadData(child, null);
+
+                }
+                edit.ShowDialog();
+                if (edit.DialogResult == DialogResult.OK)
+                {
+                    LoadData();
+                }
+            }
+        }
+        private void GvParentDetails_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            using (EditParticipiant edit = new EditParticipiant())
+            {
+                if (e.RowIndex >= 0)
+                {
+                    int parentId = Convert.ToInt32(GvParentDetails.Rows[e.RowIndex].Cells["ParentID"].Value);
+                    Parents parent = factory.GetParentByID(parentId);
+                    edit.LoadData(null, parent);
+
+                }
+                edit.ShowDialog();
+                if (edit.DialogResult == DialogResult.OK)
+                {
+                    LoadData();
+                }
             }
         }
     }

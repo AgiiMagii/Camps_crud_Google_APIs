@@ -28,6 +28,12 @@ namespace Camps.Lib
             if (noTracking) query = query.AsNoTracking();
             return query.ToList();
         }
+        public IQueryable<TEntity> GetQueryable<TEntity>(bool noTracking = true) where TEntity : class
+        {
+            IQueryable<TEntity> query = _dbContext.Set<TEntity>();
+            if (noTracking) query = query.AsNoTracking();
+            return query;
+        }
 
         public TEntity GetEntityByFilter<TEntity>(Expression<Func<TEntity, bool>> filter, bool noTracking = true) where TEntity : class
         {
@@ -145,6 +151,16 @@ namespace Camps.Lib
             {
                 throw;
             }
+        }
+        public IQueryable<TEntity> GetEntitiesFromStrinSql<TEntity>(string sqlQuery) where TEntity : class
+        {
+            try
+            {
+
+                return _dbContext.Set<TEntity>().SqlQuery(sqlQuery).AsQueryable();
+
+            }
+            catch { throw; }
         }
     }
 }

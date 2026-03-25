@@ -29,6 +29,10 @@
         private void InitializeComponent()
         {
             this.GvContracts = new System.Windows.Forms.DataGridView();
+            this.BtnSaveToCSV = new System.Windows.Forms.Button();
+            this.BtnExecSql = new System.Windows.Forms.Button();
+            this.Rt_sql = new System.Windows.Forms.RichTextBox();
+            this.BtnSaveXls = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.GvContracts)).BeginInit();
             this.SuspendLayout();
             // 
@@ -44,10 +48,51 @@
             this.GvContracts.TabIndex = 0;
             this.GvContracts.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GvContracts_CellContentClick);
             // 
+            // BtnSaveToCSV
+            // 
+            this.BtnSaveToCSV.Location = new System.Drawing.Point(3, 37);
+            this.BtnSaveToCSV.Name = "BtnSaveToCSV";
+            this.BtnSaveToCSV.Size = new System.Drawing.Size(99, 23);
+            this.BtnSaveToCSV.TabIndex = 1;
+            this.BtnSaveToCSV.Text = "Save to CSV";
+            this.BtnSaveToCSV.UseVisualStyleBackColor = true;
+            this.BtnSaveToCSV.Click += new System.EventHandler(this.BtnSaveToCSV_Click);
+            // 
+            // BtnExecSql
+            // 
+            this.BtnExecSql.Location = new System.Drawing.Point(377, 37);
+            this.BtnExecSql.Name = "BtnExecSql";
+            this.BtnExecSql.Size = new System.Drawing.Size(99, 23);
+            this.BtnExecSql.TabIndex = 2;
+            this.BtnExecSql.Text = "Get SQL data";
+            this.BtnExecSql.UseVisualStyleBackColor = true;
+            this.BtnExecSql.Click += new System.EventHandler(this.BtnExecSql_Click);
+            // 
+            // Rt_sql
+            // 
+            this.Rt_sql.Location = new System.Drawing.Point(482, 3);
+            this.Rt_sql.Name = "Rt_sql";
+            this.Rt_sql.Size = new System.Drawing.Size(304, 57);
+            this.Rt_sql.TabIndex = 3;
+            this.Rt_sql.Text = "";
+            // 
+            // BtnSaveXls
+            // 
+            this.BtnSaveXls.Location = new System.Drawing.Point(3, 8);
+            this.BtnSaveXls.Name = "BtnSaveXls";
+            this.BtnSaveXls.Size = new System.Drawing.Size(99, 23);
+            this.BtnSaveXls.TabIndex = 4;
+            this.BtnSaveXls.Text = "Save to XLS";
+            this.BtnSaveXls.UseVisualStyleBackColor = true;
+            // 
             // ContractsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.BtnSaveXls);
+            this.Controls.Add(this.Rt_sql);
+            this.Controls.Add(this.BtnExecSql);
+            this.Controls.Add(this.BtnSaveToCSV);
             this.Controls.Add(this.GvContracts);
             this.Name = "ContractsControl";
             this.Size = new System.Drawing.Size(789, 336);
@@ -59,5 +104,9 @@
         #endregion
 
         private System.Windows.Forms.DataGridView GvContracts;
+        private System.Windows.Forms.Button BtnSaveToCSV;
+        private System.Windows.Forms.Button BtnExecSql;
+        private System.Windows.Forms.RichTextBox Rt_sql;
+        private System.Windows.Forms.Button BtnSaveXls;
     }
 }

@@ -2,6 +2,7 @@
 using Camps.Views;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Validation;
 using System.Diagnostics.Contracts;
 using System.Linq;
@@ -168,26 +169,11 @@ namespace Camps.Lib
         }
         public List<Parents> GetParentsByChildID(long childID)
         {
-            var parents = repo.GetEntities<Parents>()
-                .Join(repo.GetEntities<Contracts>(),
-                      p => p.parentID,
-                      c => c.parentID,
-                      (p, c) => new { Parent = p, Contract = c })
-                .Where(pc => pc.Contract.childID == childID)
-                .Select(pc => pc.Parent)
-                .ToList();
-
-            var parents2 = repo.GetEntities<Parents>()
-                .Join(repo.GetEntities<Contracts>(),
-                      p => p.parentID,
-                      c => c.patent2ID,
-                      (p, c) => new { Parent = p, Contract = c })
-                .Where(pc => pc.Contract.childID == childID)
-                .Select(pc => pc.Parent)
-                .ToList();
-
-            // Apvienojam un noņemam dublētus
-            return parents.Concat(parents2).Distinct().ToList();
+            var parents = repo.GetQueryable<Parents>()
+                  .Include(p => p.Children)
+                  .Where(p => p.Children.Any(c => c.childID == childID))
+                  .ToList();
+            return parents;
         }
         public Address GetAddressByID(long? addressID)
         {
@@ -201,6 +187,14 @@ namespace Camps.Lib
                 return GetAddressByID(camp.addressID);
             }
             return null;
+        }
+        public Children GetChildByID(long childID)
+        {
+            return repo.GetEntityByFilter<Children>(c => c.childID == childID);
+        }
+        public Parents GetParentByID(long parentID)
+        {
+            return repo.GetEntityByFilter<Parents>(p => p.parentID == parentID);
         }
         public long GetLastAddressID()
         {
@@ -236,10 +230,24 @@ namespace Camps.Lib
         }
         public bool DeleteContract(int contractID)
         {
-            Contracts contract = repo.GetEntityByFilter<Contracts>(c => c.contractID == contractID);
-            if (contract != null)
+            return repo.DeleteEntityById<Contracts>(contractID);
+        }
+        public bool DeleteChild(long childID)
+        {
+            Children child = repo.GetEntityByFilter<Children>(c => c.childID == childID);
+            if (child != null)
             {
-                repo.DeleteEntity(contract);
+                repo.DeleteEntity(child);
+                return true;
+            }
+            return false;
+        }
+        public bool DeleteParent(long parentID)
+        {
+            Parents parent = repo.GetEntityByFilter<Parents>(p => p.parentID == parentID);
+            if (parent != null)
+            {
+                repo.DeleteEntity(parent);
                 return true;
             }
             return false;
@@ -355,7 +363,10 @@ namespace Camps.Lib
                         Date = DateTime.Now,
                         Balance = random.Next(100, 400)
                     };
-
+                    foreach (var parent in parents)
+                    {
+                        child.Parents.Add(parent); // EF automātiski saista mapping table
+                    }
                     repo.InsertEntity(contract);
                     repo.SaveChanges();
 
@@ -401,17 +412,17 @@ namespace Camps.Lib
                     .Select(c => new ContractsView
                     {
                         contractID = c.contractID,
-                        CampName = repo.GetEntityByFilter<Camps>(camp => camp.campID == c.campID)?.Name ?? "Unknown Camp",
+                        CampName = repo.GetEntityByFilter<Camps>(camp => camp.campID == c.campID)?.Name ?? "-",
                         ChildFullName = repo.GetEntityByFilter<Children>(child => child.childID == c.childID) != null
                             ? $"{repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Name} {repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Surname}"
-                            : "Unknown Child",
-                        ParentFullName2 = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID) != null
-                            ? $"{repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Name} {repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Surname}"
-                            : "Unknown Parent",
+                            : "-",
                         ParentFullName = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID) != null
                             ? $"{repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID).Name} {repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID).Surname}"
+                            : "-",
+                        ParentFullName2 = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID) != null
+                            ? $"{repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Name} {repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID).Surname}"
                             : string.Empty,
-                        ParentPhone = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.parentID)?.Phone ?? "Unknown Phone",
+                        ParentPhone = repo.GetEntityByFilter<Parents>(parent => parent.parentID == c.patent2ID)?.Phone ?? "-",
                         Date = c.Date,
                         Balance = c.Balance
                     })
@@ -438,6 +449,19 @@ namespace Camps.Lib
                 "1ySwP3-xn8RUxH7NenO-gZ-q_FhhZZ1_h9l3e9hRKfzg",
                 "Form Responses 1",
                 rowIndex);
+        }
+        public IQueryable<T> GetSqlResult<T>(string sql) where T : class
+        {
+            try
+            {
+                return repo.GetEntitiesFromStrinSql<T>(sql);
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"SQL Error: {ex.Message}");
+                return Enumerable.Empty<T>().AsQueryable();
+            }
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using System;
+﻿using CsvHelper;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -87,6 +91,54 @@ namespace Camps.Lib
                 if (control.HasChildren)
                 {
                     ClearForm(control.Controls);
+                }
+            }
+        }
+
+        public List<T> ReadCsvFile<T>(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                {
+                    IEnumerable<T> records = csv.GetRecords<T>();
+                    return new List<T>(records);
+                }
+            }
+        }
+
+        public void GenerateCsv<T>(string filePath, List<T> items) where T : class
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecords(items);
+                }
+            }
+        }
+
+        public void GenerateCsv2(string path, IEnumerable data)
+        {
+            var enumerator = data.GetEnumerator();
+            if (!enumerator.MoveNext()) return;
+
+            var type = enumerator.Current.GetType();
+            var properties = type.GetProperties();
+
+            using (var writer = new StreamWriter(path))
+            {
+                writer.WriteLine(string.Join(",", properties.Select(p => p.Name)));
+
+                foreach (var item in data)
+                {
+                    var values = properties.Select(p =>
+                    {
+                        var value = p.GetValue(item, null);
+                        return value?.ToString();
+                    });
+
+                    writer.WriteLine(string.Join(",", values));
                 }
             }
         }
