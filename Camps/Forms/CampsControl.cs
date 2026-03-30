@@ -15,6 +15,10 @@ namespace Camps.Forms
     {
         private readonly Factory factory = new Factory();
         private readonly Helper helper = new Helper();
+        List<GridAction> gridActions = new List<GridAction>
+        {
+           new GridAction { Name = "Contracts", Text = "Contracts"}
+        };
         public CampsControl()
         {
             InitializeComponent();
@@ -81,7 +85,7 @@ namespace Camps.Forms
         public void LoadData()
         {
             List<CampsView> camps = new Factory().MapToCampsView();
-            helper.ReloadGrid(GvCamps, camps);
+            helper.ReloadGrid2(GvCamps, camps, gridActions);
             GvCamps.Columns["campID"].Visible = false;
         }
 
@@ -97,7 +101,7 @@ namespace Camps.Forms
                 }
                 else
                 {
-                    Camps camp = factory.GetCampByID(campID);
+                    Camp camp = factory.GetCampByID(campID);
                     Address address = factory.GetAddressByID(camp.addressID ?? 0);
                     if (camp == null)
                     {
@@ -127,6 +131,41 @@ namespace Camps.Forms
         private void BtnRefresh_Click(object sender, System.EventArgs e)
         {
             _ = SyncCampsToGForm();
+        }
+
+        private void GvCamps_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex >= 0 && GvCamps.Columns[e.ColumnIndex].Name == "Contracts")
+            {
+                long campID = (long)GvCamps.Rows[e.RowIndex].Cells["campID"].Value;
+                if (campID == 0)
+                {
+                    MessageBox.Show("Invalid camp selected.");
+                    return;
+                }
+                else
+                {
+                    string campName = GvCamps.Rows[e.RowIndex].Cells["Name"].Value.ToString();
+                    ContractsControl contractsControl = new ContractsControl();
+                    contractsControl.LoadData(campID);
+
+                    // Find parent form with TabControl
+                    Form parentForm = this.FindForm();
+                    TabControl tabControl = helper.FindTabControl(parentForm);
+
+                    if (tabControl != null)
+                    {
+                        TabPage newTab = new TabPage($"Contracts - Camp {campName}")
+                        {
+                            Tag = campID
+                        };
+                        contractsControl.Dock = DockStyle.Fill;
+                        newTab.Controls.Add(contractsControl);
+                        tabControl.TabPages.Add(newTab);
+                        tabControl.SelectedTab = newTab;
+                    }
+                }
+            }
         }
     }
 }

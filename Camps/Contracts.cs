@@ -28,11 +28,11 @@ namespace Camps
         public Nullable<System.DateTime> Date { get; set; }
         public Nullable<decimal> Balance { get; set; }
     
-        public virtual Camps Camps { get; set; }
         public virtual Children Children { get; set; }
         public virtual Parents Parents { get; set; }
         public virtual Parents Parents1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Invoice> Invoice { get; set; }
+        public virtual Camp Camp { get; set; }
     }
 }

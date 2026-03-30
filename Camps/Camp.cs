@@ -12,10 +12,10 @@ namespace Camps
     using System;
     using System.Collections.Generic;
     
-    public partial class Camps
+    public partial class Camp
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Camps()
+        public Camp()
         {
             this.Contracts = new HashSet<Contracts>();
             this.Administration = new HashSet<Administration>();

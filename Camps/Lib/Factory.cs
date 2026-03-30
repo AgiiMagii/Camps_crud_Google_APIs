@@ -37,7 +37,7 @@ namespace Camps.Lib
         }
         public List<CampsView> MapToCampsView()
         {
-            List<Camps> camps = repo.GetEntities<Camps>();
+            List<Camp> camps = repo.GetEntities<Camp>();
             List<Address> addresses = repo.GetEntities<Address>();
             return camps.Select(c => new CampsView
             {
@@ -91,9 +91,9 @@ namespace Camps.Lib
                 repo.UpdateEntity(user);
             }
         }
-        public void UpdateCamp(Camps camp)
+        public void UpdateCamp(Camp camp)
         {
-            Camps existingCamp = repo.GetEntityByFilter<Camps>(c => c.campID == camp.campID);
+            Camp existingCamp = repo.GetEntityByFilter<Camp>(c => c.campID == camp.campID);
             if (existingCamp != null)
             {
                 existingCamp.Name = camp.Name;
@@ -130,9 +130,9 @@ namespace Camps.Lib
             };
             repo.InsertEntity(user);
         }
-        public void AddCamp(Camps campData)
+        public void AddCamp(Camp campData)
         {
-            Camps camp = new Camps
+            Camp camp = new Camp
             {
                 addressID = campData.addressID,
                 Name = campData.Name,
@@ -163,9 +163,9 @@ namespace Camps.Lib
         {
             return repo.GetEntities<Address>();
         }
-        public List<Camps> GetCamps()
+        public List<Camp> GetCamps()
         {
-            return repo.GetEntities<Camps>();
+            return repo.GetEntities<Camp>();
         }
         public List<Parents> GetParentsByChildID(long childID)
         {
@@ -181,7 +181,7 @@ namespace Camps.Lib
         }
         public Address GetAddressByCampID(long campID)
         {
-            Camps camp = repo.GetEntityByFilter<Camps>(c => c.campID == campID);
+            Camp camp = repo.GetEntityByFilter<Camp>(c => c.campID == campID);
             if (camp != null)
             {
                 return GetAddressByID(camp.addressID);
@@ -196,17 +196,62 @@ namespace Camps.Lib
         {
             return repo.GetEntityByFilter<Parents>(p => p.parentID == parentID);
         }
+        public Contracts GetContractByID(int contractID)
+        {
+            return repo.GetEntityByFilter<Contracts>(c => c.contractID == contractID);
+        }
+        public List<ContractsView> GetContractByCampID(long campID)
+        {
+            var contracts = repo.GetEntities<Contracts>()
+                .Where(c => c.campID == campID)
+                .ToList();
+
+            var camps = repo.GetEntities<Camp>()
+                .ToDictionary(c => c.campID);
+
+            var children = repo.GetEntities<Children>()
+                .ToDictionary(c => c.childID);
+
+            var parents = repo.GetEntities<Parents>()
+                .ToDictionary(p => p.parentID);
+
+            return contracts.Select(c =>
+            {
+                children.TryGetValue(c.childID ?? 0, out var child);
+                parents.TryGetValue(c.parentID ?? 0, out var parent1);
+                parents.TryGetValue(c.patent2ID, out var parent2);
+                camps.TryGetValue(c.campID ?? 0, out var camp);
+
+                return new ContractsView
+                {
+                    contractID = c.contractID,
+                    CampName = camp?.Name ?? "Unknown Camp",
+                    ChildFullName = child != null
+                        ? $"{child.Name} {child.Surname}"
+                        : "Unknown Child",
+                    ParentFullName2 = parent1 != null
+                        ? $"{parent1.Name} {parent1.Surname}"
+                        : "Unknown Parent",
+                    ParentFullName = parent2 != null
+                        ? $"{parent2.Name} {parent2.Surname}"
+                        : string.Empty,
+                    ParentPhone = parent2?.Phone ?? "Unknown Phone",
+                    Date = c.Date,
+                    Balance = c.Balance
+                };
+            }).ToList();
+        }
         public long GetLastAddressID()
         {
             return repo.GetEntities<Address>().OrderByDescending(a => a.addressID).FirstOrDefault()?.addressID ?? 0;
         }
-        public Camps GetCampByID(long campID)
+        public Camp GetCampByID(long campID)
         {
-            return repo.GetEntityByFilter<Camps>(c => c.campID == campID);
+            return repo.GetEntityByFilter<Camp>(c => c.campID == campID);
         }
-        public Camps GetCampByName(string name)
+        public Camp GetCampByName(string name)
         {
-            return repo.GetEntityByFilter<Camps>(c => c.Name == name);
+            return repo.GetEntityByFilter<Camp>(c => c.Name == name);
         }
         public bool DeleteUser(string username)
         {
@@ -220,7 +265,7 @@ namespace Camps.Lib
         }
         public bool DeleteCamp(long campID)
         {
-            Camps camp = repo.GetEntityByFilter<Camps>(c => c.campID == campID);
+            Camp camp = repo.GetEntityByFilter<Camp>(c => c.campID == campID);
             if (camp != null)
             {
                 repo.DeleteEntity(camp);
@@ -297,14 +342,14 @@ namespace Camps.Lib
         }
         public async Task SyncCampsToGoogleFormsAsync(string formId, string questionId)
         {
-            List<Camps> camps = repo.GetEntities<Camps>();
+            List<Camp> camps = repo.GetEntities<Camp>();
             List<string> campNames = camps.Where(c => c.IsActive = true).Select(c => c.Name).ToList();
             await _gforms.SyncQuestionOptionsToFormAsync(formId, questionId, campNames);
         }
         public List<ContractsView> MapToContractsView()
         {
             List<Contracts> contracts = repo.GetEntities<Contracts>();
-            List<Camps> camps = repo.GetEntities<Camps>();
+            List<Camp> camps = repo.GetEntities<Camp>();
             List<Children> children = repo.GetEntities<Children>();
             List<Parents> parents = repo.GetEntities<Parents>();
             return contracts.Select(c => new ContractsView
@@ -325,7 +370,7 @@ namespace Camps.Lib
                 Balance = c.Balance
             }).ToList();
         }
-        public void CreateContract(Children child, List<Parents> parents, Camps selectedCamp, SheetDataView sheetData = null)
+        public void CreateContract(Children child, List<Parents> parents, Camp selectedCamp, SheetDataView sheetData = null)
         {
             using (var transaction = repo.BeginTransaction())
             {
@@ -412,7 +457,7 @@ namespace Camps.Lib
                     .Select(c => new ContractsView
                     {
                         contractID = c.contractID,
-                        CampName = repo.GetEntityByFilter<Camps>(camp => camp.campID == c.campID)?.Name ?? "-",
+                        CampName = repo.GetEntityByFilter<Camp>(camp => camp.campID == c.campID)?.Name ?? "-",
                         ChildFullName = repo.GetEntityByFilter<Children>(child => child.childID == c.childID) != null
                             ? $"{repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Name} {repo.GetEntityByFilter<Children>(child => child.childID == c.childID).Surname}"
                             : "-",

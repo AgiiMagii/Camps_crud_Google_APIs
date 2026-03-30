@@ -23,8 +23,11 @@ namespace Camps.Forms
         {
             int currentYear = DateTime.Now.Year;
 
+            int minYear = currentYear - 17;
+            int maxYear = currentYear - 7;
+
             List<int> years = Enumerable
-                .Range(currentYear - 18, 12)
+                .Range(minYear, maxYear - minYear + 1)
                 .Reverse()
                 .ToList();
 

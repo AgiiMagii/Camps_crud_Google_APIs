@@ -1,5 +1,6 @@
 ﻿using Camps.Interfaces;
 using Camps.Lib;
+using Camps.Services;
 using Camps.Views;
 using Google.Apis.Sheets.v4.Data;
 using System;
@@ -16,6 +17,12 @@ namespace Camps.Forms
 {
     public partial class ContractsControl : UserControl, INavigate
     {
+        List<GridAction> gridActions = new List<GridAction>
+        { 
+                new GridAction { Name = "Delete", Text = "Delete"},
+                new GridAction { Name = "Xml", Text = "Xml"}
+        };
+        private readonly XmlOperation xmlOperation = new XmlOperation();
         private readonly Helper helper = new Helper();
         private readonly Factory factory = new Factory();
         private int totalContracts = 0;
@@ -46,10 +53,20 @@ namespace Camps.Forms
             }
         }
 
-        public void LoadData()
+        public void LoadData(long? campID = null)
         {
-            totalContracts = factory.GetTotalContractCount();
-            helper.ReloadGrid(GvContracts, factory.GetTContracts(pageSize, currentPage), true);
+            if (campID.HasValue)
+            {
+                // Filtrējam pēc camp
+                List<ContractsView> campContracts = factory.GetContractByCampID(campID.Value);
+                helper.ReloadGrid2(GvContracts, campContracts, gridActions);
+            }
+            else
+            {
+                // Visi kontrakti (paging)
+                totalContracts = factory.GetTotalContractCount();
+                helper.ReloadGrid2(GvContracts, factory.GetTContracts(pageSize, currentPage), gridActions);
+            }
         }
 
         private void GvContracts_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -66,25 +83,45 @@ namespace Camps.Forms
                     MessageBox.Show("Contract deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-        }
-
-        private void BtnSaveToCSV_Click(object sender, EventArgs e)
-        {
-            if (GvContracts.DataSource == null) return;
-
-            using (SaveFileDialog sfd = new SaveFileDialog())
+            else if (e.ColumnIndex == GvContracts.Columns["Xml"].Index && e.RowIndex >= 0)
             {
-                sfd.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-                sfd.FileName = "Contracts.csv";
-
-                if (sfd.ShowDialog() == DialogResult.OK)
+                ContractsView contract = (ContractsView)GvContracts.Rows[e.RowIndex].DataBoundItem;
+                SaveFileDialog saveFileDialog = new SaveFileDialog
                 {
-                    string path = sfd.FileName;
-                    helper.GenerateCsv2(path, GvContracts.DataSource as IEnumerable<object>);
-                    MessageBox.Show($"File saved to {path}");
+                    Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*",
+                    Title = "Save Contract as XML",
+                    FileName = $"Contract_{contract.contractID}.xml"
+
+                };
+                if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    string filePath = saveFileDialog.FileName;
+                    xmlOperation.PrepareXml(contract, filePath);
+                    MessageBox.Show($"Contract saved as XML at: {filePath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+
+
+
             }
         }
+
+        //private void BtnSaveToCSV_Click(object sender, EventArgs e)
+        //{
+        //    if (GvContracts.DataSource == null) return;
+
+        //    using (SaveFileDialog sfd = new SaveFileDialog())
+        //    {
+        //        sfd.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
+        //        sfd.FileName = "Contracts.csv";
+
+        //        if (sfd.ShowDialog() == DialogResult.OK)
+        //        {
+        //            string path = sfd.FileName;
+        //            helper.GenerateCsv2(path, GvContracts.DataSource as IEnumerable<object>);
+        //            MessageBox.Show($"File saved to {path}");
+        //        }
+        //    }
+        //}
 
         private void BtnExecSql_Click(object sender, EventArgs e)
         {

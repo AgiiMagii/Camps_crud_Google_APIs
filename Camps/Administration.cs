@@ -17,7 +17,7 @@ namespace Camps
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Administration()
         {
-            this.Camps = new HashSet<Camps>();
+            this.Camp = new HashSet<Camp>();
         }
     
         public long administrationID { get; set; }
@@ -29,6 +29,6 @@ namespace Camps
     
         public virtual AdminRoles AdminRoles { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Camps> Camps { get; set; }
+        public virtual ICollection<Camp> Camp { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using CsvHelper;
+﻿
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -95,52 +95,57 @@ namespace Camps.Lib
             }
         }
 
-        public List<T> ReadCsvFile<T>(string filePath)
+        public void ReloadGrid2<T>(DataGridView gridName, List<T> dataSource, List<GridAction> gridActions, List<int> hideCollIdx = null) where T : class
         {
-            using (StreamReader reader = new StreamReader(filePath))
+            try
             {
-                using (CsvReader csv = new CsvReader(reader, CultureInfo.InvariantCulture))
+                gridName.DataSource = null;
+                gridName.Columns.Clear();
+                gridName.DataSource = dataSource;
+
+                if (hideCollIdx != null && hideCollIdx.Count > 0)
                 {
-                    IEnumerable<T> records = csv.GetRecords<T>();
-                    return new List<T>(records);
-                }
-            }
-        }
-
-        public void GenerateCsv<T>(string filePath, List<T> items) where T : class
-        {
-            using (StreamWriter writer = new StreamWriter(filePath))
-            {
-                using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                {
-                    csv.WriteRecords(items);
-                }
-            }
-        }
-
-        public void GenerateCsv2(string path, IEnumerable data)
-        {
-            var enumerator = data.GetEnumerator();
-            if (!enumerator.MoveNext()) return;
-
-            var type = enumerator.Current.GetType();
-            var properties = type.GetProperties();
-
-            using (var writer = new StreamWriter(path))
-            {
-                writer.WriteLine(string.Join(",", properties.Select(p => p.Name)));
-
-                foreach (var item in data)
-                {
-                    var values = properties.Select(p =>
+                    foreach (int idx in hideCollIdx)
                     {
-                        var value = p.GetValue(item, null);
-                        return value?.ToString();
-                    });
-
-                    writer.WriteLine(string.Join(",", values));
+                        gridName.Columns[idx].Visible = false;
+                    }
+                }
+                if (gridActions != null)
+                {
+                    foreach (GridAction action in gridActions)
+                    {
+                        DataGridViewButtonColumn btnAction = new DataGridViewButtonColumn();
+                        btnAction.HeaderText = "";
+                        btnAction.Name = action.Name;
+                        btnAction.Text = action.Text;
+                        btnAction.UseColumnTextForButtonValue = true;
+                        gridName.Columns.Add(btnAction);
+                    }
                 }
             }
+            catch { throw; }
+
+        }
+
+        public TabControl FindTabControl(Control parent)
+        {
+            foreach (Control control in parent.Controls)
+            {
+                if (control is TabControl tc)
+                    return tc;
+
+                var found = FindTabControl(control);
+                if (found != null)
+                    return found;
+            }
+            return null;
         }
     }
+
+    public class GridAction
+    {
+        public string Name { get; set; }
+        public string Text { get; set; }
+    }
+
 }

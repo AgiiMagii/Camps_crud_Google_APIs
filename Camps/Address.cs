@@ -17,7 +17,7 @@ namespace Camps
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Address()
         {
-            this.Camps = new HashSet<Camps>();
+            this.Camp = new HashSet<Camp>();
         }
     
         public long addressID { get; set; }
@@ -28,6 +28,6 @@ namespace Camps
         public string Address1 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Camps> Camps { get; set; }
+        public virtual ICollection<Camp> Camp { get; set; }
     }
 }

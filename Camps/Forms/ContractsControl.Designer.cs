@@ -56,7 +56,6 @@
             this.BtnSaveToCSV.TabIndex = 1;
             this.BtnSaveToCSV.Text = "Save to CSV";
             this.BtnSaveToCSV.UseVisualStyleBackColor = true;
-            this.BtnSaveToCSV.Click += new System.EventHandler(this.BtnSaveToCSV_Click);
             // 
             // BtnExecSql
             // 

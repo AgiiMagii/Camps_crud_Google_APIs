@@ -3,6 +3,7 @@ using Camps.Lib;
 using Camps.Views;
 using Google.Apis.Sheets.v4.Data;
 using Newtonsoft.Json.Linq;
+using Services.Camps;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace Camps.Forms
 {
@@ -20,12 +22,16 @@ namespace Camps.Forms
     {
         private readonly Factory factory = new Factory();
         private readonly Helper helper = new Helper();
+        private readonly Validation validation = new Validation();
         private List<SheetDataView> sheetData;
         private SheetDataView selectedSheetRow = null;
         public CustomersControl()
         {
             InitializeComponent();
             LayoutSettings();
+            TxtPhone.TextChanged += TextBox_TextChanged;
+            TxtPhone2.TextChanged += TextBox_TextChanged;
+            TxtEmail.TextChanged += TextBox_TextChanged;
         }
         private void LayoutSettings()
         {
@@ -48,8 +54,8 @@ namespace Camps.Forms
         {
             if (tabControl.SelectedTab == tabPage1)
             {
-                
-            } 
+
+            }
             else if (tabControl.SelectedTab == tabPage2)
             {
                 splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
@@ -57,7 +63,7 @@ namespace Camps.Forms
         }
         private void LoadComboBoxes()
         {
-            List<Camps> camps = factory.GetCamps();
+            List<Camp> camps = factory.GetCamps();
             CbCamp.DataSource = camps;
             CbCamp.DisplayMember = "Name";
             CbCamp.ValueMember = "campID";
@@ -65,8 +71,11 @@ namespace Camps.Forms
 
             int currentYear = DateTime.Now.Year;
 
+            int minYear = currentYear - 17;
+            int maxYear = currentYear - 7;
+
             List<int> years = Enumerable
-                .Range(currentYear - 18, 12)
+                .Range(minYear, maxYear - minYear + 1)
                 .Reverse()
                 .ToList();
 
@@ -162,18 +171,18 @@ namespace Camps.Forms
                         case "Aizbildnis":
                             parents2 = Enums.Parents.Guardian;
                             break;
-                        default : 
+                        default:
                             parents2 = (Enums.Parents)(-1); // Default value, can be adjusted as needed
                             break;
 
                     }
 
-                    CbCamp.SelectedItem = CbCamp.Items.Cast<Camps>().FirstOrDefault(c => c.Name == selectedData.Camp);
+                    CbCamp.SelectedItem = CbCamp.Items.Cast<Camp>().FirstOrDefault(c => c.Name == selectedData.Camp);
 
                     TxtChildName.Text = selectedData.ChildName.ToString();
                     TxtChildSurname.Text = selectedData.ChildSurname.ToString();
                     CbGender.SelectedItem = gender;
-                    CbBirthYear.SelectedItem = CbCamp.Items.Cast<Camps>().FirstOrDefault(c => c.Name == selectedData.Camp) != null
+                    CbBirthYear.SelectedItem = CbCamp.Items.Cast<Camp>().FirstOrDefault(c => c.Name == selectedData.Camp) != null
                         ? (int?)Convert.ToInt32(selectedData.BirthYear)
                         : null;
 
@@ -244,12 +253,12 @@ namespace Camps.Forms
         {
             Children child = CreateChild();
             List<Parents> parents = CreateParents();
-            Camps selectedCamp = CbCamp.SelectedItem as Camps;
+            Camp selectedCamp = CbCamp.SelectedItem as Camp;
             if (selectedCamp != null)
             {
                 factory.GetCampByName(selectedCamp.Name);
             }
-            if (child != null && parents.Count > 0 && selectedCamp != null) 
+            if (child != null && parents.Count > 0 && selectedCamp != null)
             {
                 factory.CreateContract(child, parents, selectedCamp);
                 if (selectedSheetRow != null)
@@ -263,7 +272,7 @@ namespace Camps.Forms
                 MessageBox.Show("Data saved successfully!");
             }
             else
-            { 
+            {
                 MessageBox.Show("Please fill in all required fields and select a camp.");
             }
         }
@@ -286,7 +295,7 @@ namespace Camps.Forms
                     GvParentDetails.DataSource = null;
                     splitContainer1.Panel2Collapsed = true;
                 }
-                
+
                 LoadData();
 
             }
@@ -330,6 +339,19 @@ namespace Camps.Forms
                     LoadData();
                 }
             }
+        }
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox == TxtPhone)
+            {
+                validation.UpdateError(textBox, validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
+            }
+            else if (textBox == TxtPhone2)
+            {
+                validation.UpdateError(textBox, validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
+            }
+
         }
     }
 }

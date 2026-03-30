@@ -124,7 +124,7 @@
     <Compile Include="Audit.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Camps.cs">
+    <Compile Include="Camp.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Children.cs">
@@ -240,6 +240,7 @@
     <Compile Include="Services\Session.cs" />
     <Compile Include="Services\Sheets.cs" />
     <Compile Include="Services\Validation.cs" />
+    <Compile Include="Services\XmlOperation.cs" />
     <Compile Include="UserRoles.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>

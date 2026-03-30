@@ -28,7 +28,6 @@ namespace Camps
         public virtual DbSet<Address> Address { get; set; }
         public virtual DbSet<Administration> Administration { get; set; }
         public virtual DbSet<AdminRoles> AdminRoles { get; set; }
-        public virtual DbSet<Camps> Camps { get; set; }
         public virtual DbSet<Children> Children { get; set; }
         public virtual DbSet<Contracts> Contracts { get; set; }
         public virtual DbSet<FoodProvider> FoodProvider { get; set; }
@@ -37,5 +36,6 @@ namespace Camps
         public virtual DbSet<Audit> Audit { get; set; }
         public virtual DbSet<UserRoles> UserRoles { get; set; }
         public virtual DbSet<Users> Users { get; set; }
+        public virtual DbSet<Camp> Camp { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Windows.Forms;
 
 namespace Camps.Lib
 {
@@ -140,7 +141,6 @@ namespace Camps.Lib
         {
             _dbContext.SaveChanges();
         }
-
         public int GetCount<TEntity>() where TEntity : class
         {
             try
@@ -161,6 +161,25 @@ namespace Camps.Lib
 
             }
             catch { throw; }
+        }
+        public bool DeleteAllEntities<TEntity>() where TEntity : class
+        {
+            try
+            {
+                var entities = _dbContext.Set<TEntity>().ToList();
+                _dbContext.Set<TEntity>().RemoveRange(entities);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch { return false; }
+        }
+        public List<TProperty> GetDistinctFieldList<TEntity, TProperty>(Expression<Func<TEntity, TProperty>> selector) where TEntity : class
+        {
+            return _dbContext.Set<TEntity>()
+                .AsNoTracking()
+                .Select(selector)
+                .Distinct()
+                .ToList();
         }
     }
 }

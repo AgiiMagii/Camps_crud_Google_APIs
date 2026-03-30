@@ -1,24 +1,30 @@
 ﻿using Camps.Lib;
 using Camps.Views;
+using Services.Camps;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace Camps.Forms
 {
     public partial class AddCamp : Form
     {
+        
+        Validation validation = new Validation();
         Factory factory = new Factory();
-        Camps _camps = null;
+        Camp _camps = null;
         Address _address = null;
         private bool _isLoading = false;
         private bool _isEditAddress = false;
 
-        public AddCamp(Camps camp, Address address)
+        public AddCamp(Camp camp, Address address)
         {
             InitializeComponent();
+            Txtname.TextChanged += TextBox_TextChanged;
             this.ShowIcon = false;
             _camps = camp;
             _address = address;
@@ -91,7 +97,7 @@ namespace Camps.Forms
 
         private void InsertCamp(long addressId)
         {
-            Camps newCamp = new Camps
+            Camp newCamp = new Camp
             {
                 Name = Txtname.Text,
                 Description = TxtDesc.Text,
@@ -219,5 +225,15 @@ namespace Camps.Forms
             CbExisting.Enabled = false;
 
         }
+
+        private void TextBox_TextChanged(object sender, EventArgs e)
+        {
+            TextBox tb = sender as TextBox;
+            if (tb == Txtname)
+            { 
+                validation.UpdateError(tb, Validation.IsCampNameAllowedSoFar(tb.Text), "Name must be 2-50 chars, letters only.");
+            }
+        }
+        
     }
 }
