@@ -9,5 +9,7 @@ namespace Camps.Interfaces
     internal interface IDeletable
     {
         void Delete();
+        bool CanDelete { get; }
+
     }
 }

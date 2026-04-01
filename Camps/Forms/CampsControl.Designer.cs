@@ -44,7 +44,6 @@
             this.GvCamps.Size = new System.Drawing.Size(783, 298);
             this.GvCamps.TabIndex = 0;
             this.GvCamps.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GvCamps_CellContentClick);
-            this.GvCamps.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GvCamps_RowHeaderMouseDoubleClick);
             // 
             // BtnRefresh
             // 

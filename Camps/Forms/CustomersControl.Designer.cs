@@ -112,6 +112,7 @@
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(1150, 330);
             this.tabControl.TabIndex = 1;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -152,8 +153,8 @@
             this.GvParticipiants.Name = "GvParticipiants";
             this.GvParticipiants.Size = new System.Drawing.Size(1130, 188);
             this.GvParticipiants.TabIndex = 0;
+            this.GvParticipiants.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GvParticipiants_CellContentClick);
             this.GvParticipiants.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GvParticipiants_RowHeaderMouseClick);
-            this.GvParticipiants.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GvParticipiants_RowHeaderMouseDoubleClick);
             // 
             // GvParentDetails
             // 
@@ -165,7 +166,7 @@
             this.GvParentDetails.Name = "GvParentDetails";
             this.GvParentDetails.Size = new System.Drawing.Size(1130, 94);
             this.GvParentDetails.TabIndex = 2;
-            this.GvParentDetails.RowHeaderMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.GvParentDetails_RowHeaderMouseDoubleClick);
+            this.GvParentDetails.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.GvParentDetails_CellContentClick);
             // 
             // tabPage2
             // 

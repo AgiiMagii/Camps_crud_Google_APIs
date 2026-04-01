@@ -9,6 +9,6 @@ namespace Camps.Interfaces
     public interface IAddable
     {
         void Add();
-        void Refresh();
+        bool CanAdd { get; }
     }
 }

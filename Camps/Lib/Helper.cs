@@ -1,4 +1,5 @@
 ﻿
+using Google.Apis.Forms.v1.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -120,8 +121,10 @@ namespace Camps.Lib
                         btnAction.Text = action.Text;
                         btnAction.UseColumnTextForButtonValue = true;
                         gridName.Columns.Add(btnAction);
+                        btnAction.DisplayIndex = gridName.Columns.Count - 1;
                     }
                 }
+                gridName.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
             }
             catch { throw; }
 

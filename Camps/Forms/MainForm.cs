@@ -60,7 +60,7 @@ namespace Camps
                 default: // User
                     BtnUsers.Visible = false;
                     BtnCustomer.Visible = true;
-                    BtnCamp.Visible = false;
+                    BtnCamp.Visible = true;
                     break;
             }
         }
@@ -84,6 +84,7 @@ namespace Camps
         private void BtnCustomer_Click(object sender, EventArgs e)
         {
             CustomersControl customersControl = new CustomersControl();
+            customersControl.StateChanged += (s, ev) => ActivateActionButtons();
             OpenTab("Customers", customersControl);
             ShowLabelCloseTab();
             customersControl.LoadData();
@@ -100,7 +101,6 @@ namespace Camps
 
         private void OpenTab(string title, UserControl control)
         {
-            // Check if the tab already exists
             foreach (TabPage page in tabMain.TabPages)
             {
                 if (page.Text == title)
@@ -109,12 +109,13 @@ namespace Camps
                     return;
                 }
             }
-            // Create a new tab
+
             TabPage newPage = new TabPage(title);
             control.Dock = DockStyle.Fill;
             newPage.Controls.Add(control);
             tabMain.TabPages.Add(newPage);
             tabMain.SelectedTab = newPage;
+            
             ActivateActionButtons();
         }
 
@@ -184,8 +185,22 @@ namespace Camps
 
             UserControl control = tab.Controls.OfType<UserControl>().FirstOrDefault();
 
-            BtnAdd.Enabled = control is IAddable;
-            BtnDelete.Enabled = control is IDeletable;
+            if (control is IAddable addable)
+            {
+                BtnAdd.Enabled = addable.CanAdd;
+            }
+            else
+            {
+                BtnAdd.Enabled = false;
+            }
+            if (control is IDeletable deletable)
+            {
+                BtnDelete.Enabled = deletable.CanDelete;
+            }
+            else
+            {
+                BtnDelete.Enabled = false;
+            }
             BtnBack.Enabled = control is INavigate;
             BtnFvd.Enabled = control is INavigate;
             BtnRefresh.Enabled = control is IRefreshable;

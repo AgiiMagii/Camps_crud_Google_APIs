@@ -30,7 +30,11 @@ namespace Camps.Forms
 
             List<string> errors = new List<string>();
             if (!validation.IsPasswordValid(newPassword, confirmPassword))
+            {
                 errors.Add("New password must be at least 8 characters long and contain a mix of letters and numbers.");
+                MessageBox.Show(string.Join("\n", errors), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             try
             {

@@ -16,6 +16,7 @@ namespace Camps.Forms
 {
     public partial class AddUser : Form
     {
+        
         Factory factory = new Factory();
         ErrorProvider errorProvider = new ErrorProvider();
         Validation validation = new Validation();
@@ -82,19 +83,23 @@ namespace Camps.Forms
                 Name = TxtName.Text,
                 Surname = TxtSurname.Text,
                 Username = TxtUsername.Text,
-                passwordHash = TxtPassword.Text,
+                passwordHash = Password.HashPassword(TxtPassword.Text),
                 Enabled = true,
                 IsAdmin = (cbRole.SelectedValue != null && (int)cbRole.SelectedValue == 1) ? true : false,
                 roleID = (int)cbRole.SelectedValue
             };
             try
             {
+                if (Session.CurrentUser.roleID != 1 && usersuserData.roleID == 1)
+                
+                {
+                    MessageBox.Show("You cannot assign admin role.", "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 factory.AddUser(usersuserData);
                 MessageBox.Show("User created successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
-
-
             }
             catch (Exception ex)
             {

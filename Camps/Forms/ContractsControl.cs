@@ -17,16 +17,12 @@ namespace Camps.Forms
 {
     public partial class ContractsControl : UserControl, INavigate
     {
-        List<GridAction> gridActions = new List<GridAction>
-        { 
-                new GridAction { Name = "Delete", Text = "Delete"},
-                new GridAction { Name = "Xml", Text = "Xml"}
-        };
+        private readonly List<GridAction> gridActions = new List<GridAction>();
         private readonly XmlOperation xmlOperation = new XmlOperation();
         private readonly Helper helper = new Helper();
         private readonly Factory factory = new Factory();
         private int totalContracts = 0;
-        private int pageSize = 20;
+        private readonly int pageSize = 10;
         private int currentPage = 1;
         public ContractsControl()
         {
@@ -55,15 +51,21 @@ namespace Camps.Forms
 
         public void LoadData(long? campID = null)
         {
+            gridActions.Clear();
+            if (Session.CurrentUser?.roleID != 2)
+            {
+                gridActions.Add(new GridAction { Name = "Delete", Text = "Delete" });
+            }
+
+            gridActions.Add(new GridAction { Name = "Xml", Text = "Xml" });
+
             if (campID.HasValue)
             {
-                // Filtrējam pēc camp
                 List<ContractsView> campContracts = factory.GetContractByCampID(campID.Value);
                 helper.ReloadGrid2(GvContracts, campContracts, gridActions);
             }
             else
             {
-                // Visi kontrakti (paging)
                 totalContracts = factory.GetTotalContractCount();
                 helper.ReloadGrid2(GvContracts, factory.GetTContracts(pageSize, currentPage), gridActions);
             }
@@ -78,6 +80,11 @@ namespace Camps.Forms
                 DialogResult result = MessageBox.Show("Are you sure you want to delete this contract?", "Confirm Deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.Yes)
                 {
+                    if (Session.CurrentUser?.roleID == 2)
+                    {
+                        MessageBox.Show("You do not have permission to delete this contract.", "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
                     factory.DeleteContract(contractId);
                     LoadData();
                     MessageBox.Show("Contract deleted successfully.", "Deleted", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -99,34 +106,7 @@ namespace Camps.Forms
                     xmlOperation.PrepareXml(contract, filePath);
                     MessageBox.Show($"Contract saved as XML at: {filePath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
-
-
-
             }
-        }
-
-        //private void BtnSaveToCSV_Click(object sender, EventArgs e)
-        //{
-        //    if (GvContracts.DataSource == null) return;
-
-        //    using (SaveFileDialog sfd = new SaveFileDialog())
-        //    {
-        //        sfd.Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*";
-        //        sfd.FileName = "Contracts.csv";
-
-        //        if (sfd.ShowDialog() == DialogResult.OK)
-        //        {
-        //            string path = sfd.FileName;
-        //            helper.GenerateCsv2(path, GvContracts.DataSource as IEnumerable<object>);
-        //            MessageBox.Show($"File saved to {path}");
-        //        }
-        //    }
-        //}
-
-        private void BtnExecSql_Click(object sender, EventArgs e)
-        {
-            List<Contracts> contracts = factory.GetSqlResult<Contracts>(Rt_sql.Text).ToList();
-            helper.ReloadGrid(GvContracts, contracts, true);
         }
     }
 }

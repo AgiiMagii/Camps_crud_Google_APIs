@@ -18,6 +18,8 @@ namespace Camps.Forms
         {
             InitializeComponent();
         }
+        public bool CanAdd => true;
+        public bool CanDelete => true;
 
         public void Add()
         {
@@ -39,14 +41,15 @@ namespace Camps.Forms
                 return;
             }
             UserView selectedUser = (UserView)gvUsers.SelectedRows[0].DataBoundItem;
-            if (selectedUser.Username == Session.CurrentUser.Username)
-            {
-                MessageBox.Show("You can not delete this account.");
-                return;
-            }
+            
             DialogResult result = MessageBox.Show($"Are you sure you want to delete user '{selectedUser.Username}'?", "Confirm Deletion", MessageBoxButtons.YesNo);
             if (result == DialogResult.Yes)
             {
+                if (selectedUser.Username == Session.CurrentUser.Username && Session.CurrentUser.roleID != 1)
+                {
+                    MessageBox.Show("You can not delete this account.");
+                    return;
+                }
                 bool success = factory.DeleteUser(selectedUser.Username);
                 if (success)
                 {
@@ -64,7 +67,7 @@ namespace Camps.Forms
         {
             List<UserView> users = factory.MapToUserView();
 
-            helper.ReloadGrid(gvUsers, users, true);
+            helper.ReloadGrid(gvUsers, users, false);
 
             int columnIndex = gvUsers.Columns["Role"].Index;
             gvUsers.Columns.Remove("Role");

@@ -20,11 +20,16 @@ namespace Camps.Forms
 {
     public partial class CustomersControl : UserControl, IAddable, IRefreshable
     {
+        List<GridAction> gridActions = new List<GridAction>
+        {
+                new GridAction { Name = "Edit", Text = "Edit"},
+        };
         private readonly Factory factory = new Factory();
         private readonly Helper helper = new Helper();
         private readonly Validation validation = new Validation();
         private List<SheetDataView> sheetData;
         private SheetDataView selectedSheetRow = null;
+        public event EventHandler StateChanged;
         public CustomersControl()
         {
             InitializeComponent();
@@ -32,7 +37,13 @@ namespace Camps.Forms
             TxtPhone.TextChanged += TextBox_TextChanged;
             TxtPhone2.TextChanged += TextBox_TextChanged;
             TxtEmail.TextChanged += TextBox_TextChanged;
+            tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
         }
+        private void OnStateChanged()
+        {
+            StateChanged?.Invoke(this, EventArgs.Empty);
+        }
+        public bool CanAdd => tabControl.SelectedTab != null && tabControl.SelectedTab == tabPage2;
         private void LayoutSettings()
         {
             SuspendLayout();
@@ -52,14 +63,17 @@ namespace Camps.Forms
         }
         public void Add()
         {
+            if (!CanAdd) return;
+
             if (tabControl.SelectedTab == tabPage1)
             {
-
+                
             }
             else if (tabControl.SelectedTab == tabPage2)
             {
                 splitContainer2.Panel2Collapsed = !splitContainer2.Panel2Collapsed;
             }
+            OnStateChanged();
         }
         private void LoadComboBoxes()
         {
@@ -93,8 +107,9 @@ namespace Camps.Forms
         }
         public void LoadData()
         {
-            helper.ReloadGrid(GvParticipiants, factory.MapToParticipiantView());
+            helper.ReloadGrid2(GvParticipiants, factory.MapToParticipiantView(), gridActions);
             LoadComboBoxes();
+            OnStateChanged();
         }
         public async Task LoadDataAsync()
         {
@@ -282,7 +297,7 @@ namespace Camps.Forms
             if (e.RowIndex >= 0)
             {
                 int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
-                helper.ReloadGrid(GvParentDetails, factory.MapToParentsView(childId));
+                helper.ReloadGrid2(GvParentDetails, factory.MapToParentsView(childId), gridActions);
                 splitContainer1.Panel2Collapsed = false;
             }
         }
@@ -304,42 +319,6 @@ namespace Camps.Forms
                 _ = LoadDataAsync();
             }
         }
-        private void GvParticipiants_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            using (EditParticipiant edit = new EditParticipiant())
-            {
-                if (e.RowIndex >= 0)
-                {
-                    int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
-                    Children child = factory.GetChildByID(childId);
-                    edit.LoadData(child, null);
-
-                }
-                edit.ShowDialog();
-                if (edit.DialogResult == DialogResult.OK)
-                {
-                    LoadData();
-                }
-            }
-        }
-        private void GvParentDetails_RowHeaderMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            using (EditParticipiant edit = new EditParticipiant())
-            {
-                if (e.RowIndex >= 0)
-                {
-                    int parentId = Convert.ToInt32(GvParentDetails.Rows[e.RowIndex].Cells["ParentID"].Value);
-                    Parents parent = factory.GetParentByID(parentId);
-                    edit.LoadData(null, parent);
-
-                }
-                edit.ShowDialog();
-                if (edit.DialogResult == DialogResult.OK)
-                {
-                    LoadData();
-                }
-            }
-        }
         private void TextBox_TextChanged(object sender, EventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -352,6 +331,45 @@ namespace Camps.Forms
                 validation.UpdateError(textBox, validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
             }
 
+        }
+        private void GvParticipiants_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == GvParticipiants.Columns["Edit"].Index && e.RowIndex >= 0)
+            {
+                using (EditParticipiant edit = new EditParticipiant())
+                {
+                    int childId = Convert.ToInt32(GvParticipiants.Rows[e.RowIndex].Cells["ChildID"].Value);
+                    Children child = factory.GetChildByID(childId);
+                    edit.LoadData(child, null);
+                    edit.ShowDialog();
+                    if (edit.DialogResult == DialogResult.OK)
+                    {
+                        LoadData();
+                    }
+                }
+            }
+        }
+        private void GvParentDetails_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == GvParentDetails.Columns["Edit"].Index && e.RowIndex >= 0)
+            {
+                using (EditParticipiant edit = new EditParticipiant())
+                {
+                    int parentId = Convert.ToInt32(GvParentDetails.Rows[e.RowIndex].Cells["ParentID"].Value);
+                    Parents parent = factory.GetParentByID(parentId);
+                    edit.LoadData(null, parent);
+                    edit.ShowDialog();
+                    if (edit.DialogResult == DialogResult.OK)
+                    {
+                        LoadData();
+                    }
+                }
+
+            }
+        }
+        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            OnStateChanged();
         }
     }
 }
