@@ -1,4 +1,5 @@
 ﻿using Camps;
+using Camps.Lib;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -48,6 +49,51 @@ namespace Services.Camps
             }
             return errors;
         }
+        public List<string> ChildValidation(Children child)
+        {
+            List<string> errors = new List<string>();
+            if (!IsNameSurnameValid(child.Name))
+            {
+                errors.Add("Name must be between 1 and 50 characters and cannot contain digits.");
+            }
+            if (!IsNameSurnameValid(child.Surname))
+            {
+                errors.Add("Surname must be between 1 and 50 characters and cannot contain digits.");
+            }
+            if (!IsGenderValid(child.Gender))
+            {
+                errors.Add("Gender must be either 'M' or 'F'.");
+            }
+            if (!IsBirthYearValid(child.BirthYear))
+            {
+                errors.Add("Birth year must indicate age between 7 and 18.");
+            }
+            return errors;
+        }
+        public List<string> ParentsValidation(List<Parents> parents)
+        {
+            List<string> errors = new List<string>();
+            foreach (var parent in parents)
+            {
+                if (!IsNameSurnameValid(parent.Name))
+                {
+                    errors.Add($"Parent {parent.Name} {parent.Surname}: Name must be between 1 and 50 characters and cannot contain digits.");
+                }
+                if (!IsNameSurnameValid(parent.Surname))
+                {
+                    errors.Add($"Parent {parent.Name} {parent.Surname}: Surname must be between 1 and 50 characters and cannot contain digits.");
+                }
+                if (!IsPhoneValid(parent.Phone))
+                {
+                    errors.Add($"Parent {parent.Name} {parent.Surname}: Phone number must be between 7 and 15 characters and can only contain digits, '+', '-', and spaces.");
+                }
+                if (!IsEmailValid(parent.Email))
+                {
+                    errors.Add($"Parent {parent.Name} {parent.Surname}: Email is not valid.");
+                }
+            }
+            return errors;
+        }
         public bool IsPasswordValid(string password, string confirmPassword)
         {
             if (password.Length < 6 || password.Length > 60)
@@ -62,6 +108,7 @@ namespace Services.Camps
         }
         public bool IsNameSurnameValid(string input)
         {
+            if (string.IsNullOrWhiteSpace(input)) return false;
             if (input.Length < 1 || input.Length > 50 || input.Any(char.IsDigit))
             {
                 return false;
@@ -107,14 +154,15 @@ namespace Services.Camps
 
             return Regex.IsMatch(input, @"^[a-zA-Z0-9āčēģīķļņšūžĀČĒĢĪĶĻŅŠŪŽ ._-]+$");
         }
-        public bool IsPhoneAllowedSoFar(string input)
+        public static bool IsPhoneAllowedSoFar(string input)
         {
             if (string.IsNullOrEmpty(input)) return true;
             if (input.Length > 15 || input.Any(c => !char.IsDigit(c) && c != '+' && c != '-' && c != ' ')) return false;
             return true;
         }
-        public bool IsBirthYearValid(int year)
+        public bool IsBirthYearValid(int? year)
         {
+            if (!year.HasValue || year.Value == 0) return false;
             int minYear = DateTime.Now.Year - 18;
             int maxYear = DateTime.Now.Year - 7;
             if (year < minYear || year > maxYear)
@@ -123,6 +171,12 @@ namespace Services.Camps
             }
             return true;
         }
+        public bool IsGenderValid(string gender)
+        {
+            if (gender == null) return false;
+            if (gender != "M" && gender != "F") return false;
+            else return true;
+        }
         public bool IsPhoneValid(string phone)
         {
             if (phone.Length < 7 || phone.Length > 15 || !phone.All(c => char.IsDigit(c) || c == '+' || c == '-' || c == ' '))
@@ -130,6 +184,20 @@ namespace Services.Camps
                 return false;
             }
             return true;
+        }
+        public bool IsEmailValid(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email)) return false;
+
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email && email.Contains(".");
+            }
+            catch
+            {
+                return false;
+            }
         }
         public bool IsUserNameUnique(string username, List<Users> existingUsers)
         {

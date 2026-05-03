@@ -23,11 +23,8 @@ namespace Camps.Forms
                 if (result.Data != null)
                 {
                     Session.CurrentUser = result.Data;
-                    this.Hide();
-                    MainForm mainForm = new MainForm();
-                    mainForm.Show();
-                    MessageBox.Show("Login successful!");
-                    helper.ClearForm(Controls);
+                    this.DialogResult = DialogResult.OK;
+                    this.Close();
                 }
                 else
                 {

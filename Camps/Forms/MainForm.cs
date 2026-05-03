@@ -260,9 +260,7 @@ namespace Camps
         private void logOutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Session.CurrentUser = null;
-            tabMain.TabPages.Clear();
-            Login loginForm = Application.OpenForms.OfType<Login>().FirstOrDefault();
-            loginForm?.Show();
+
             this.Close();
         }
 

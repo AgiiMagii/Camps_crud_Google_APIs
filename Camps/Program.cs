@@ -17,7 +17,19 @@ namespace Camps
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+            while(true)
+        {
+                var loginForm = new Login();
+
+                if (loginForm.ShowDialog() == DialogResult.OK)
+                {
+                    Application.Run(new MainForm());
+                }
+                else
+                {
+                    break;
+                }
+            }
         }
     }
 }

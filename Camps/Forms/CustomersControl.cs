@@ -34,10 +34,23 @@ namespace Camps.Forms
         {
             InitializeComponent();
             LayoutSettings();
-            TxtPhone.TextChanged += TextBox_TextChanged;
-            TxtPhone2.TextChanged += TextBox_TextChanged;
-            TxtEmail.TextChanged += TextBox_TextChanged;
+            BindValidation();
             tabControl.SelectedIndexChanged += tabControl_SelectedIndexChanged;
+        }
+        private void BindValidation()
+        {
+            TextBox[] textBoxes =
+            {
+                TxtPhone, TxtPhone2,
+                TxtChildName, TxtChildSurname,
+                TxtParentName, TxtParentSurname,
+                TxtParentName2, TxtParentSur2
+            };
+
+            foreach (var tb in textBoxes)
+            {
+                tb.TextChanged += TextBox_TextChanged;
+            }
         }
         private void OnStateChanged()
         {
@@ -67,7 +80,7 @@ namespace Camps.Forms
 
             if (tabControl.SelectedTab == tabPage1)
             {
-                
+
             }
             else if (tabControl.SelectedTab == tabPage2)
             {
@@ -268,6 +281,17 @@ namespace Camps.Forms
         {
             Children child = CreateChild();
             List<Parents> parents = CreateParents();
+            List<string> errors = new List<string>();
+
+            errors.AddRange(validation.ChildValidation(child));
+            errors.AddRange(validation.ParentsValidation(parents));
+
+            if (errors.Count > 0)
+            {
+                MessageBox.Show(string.Join("\n", errors), "Validation Errors", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Camp selectedCamp = CbCamp.SelectedItem as Camp;
             if (selectedCamp != null)
             {
@@ -324,13 +348,16 @@ namespace Camps.Forms
             TextBox textBox = sender as TextBox;
             if (textBox == TxtPhone)
             {
-                validation.UpdateError(textBox, validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
+                validation.UpdateError(textBox, Validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
             }
             else if (textBox == TxtPhone2)
             {
-                validation.UpdateError(textBox, validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
+                validation.UpdateError(textBox, Validation.IsPhoneAllowedSoFar(textBox.Text), "Phone can only contain digits, +, -, and spaces, max 15 chars.");
             }
-
+            else if (textBox == TxtChildName || textBox == TxtChildSurname || textBox == TxtParentName || textBox == TxtParentSurname || textBox == TxtParentName2 || textBox == TxtParentSur2)
+            {
+                validation.UpdateError(textBox, Validation.IsNameAllowedSoFar(textBox.Text), "Name/Surname must be 2-50 chars, letters only.");
+            }
         }
         private void GvParticipiants_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
