@@ -87,7 +87,7 @@ namespace Services.Camps
                 {
                     errors.Add($"Parent {parent.Name} {parent.Surname}: Phone number must be between 7 and 15 characters and can only contain digits, '+', '-', and spaces.");
                 }
-                if (!IsEmailValid(parent.Email))
+                if (!string.IsNullOrWhiteSpace(parent.Email) && !IsEmailValid(parent.Email))
                 {
                     errors.Add($"Parent {parent.Name} {parent.Surname}: Email is not valid.");
                 }

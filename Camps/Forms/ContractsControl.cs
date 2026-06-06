@@ -15,14 +15,14 @@ using System.Windows.Forms;
 
 namespace Camps.Forms
 {
-    public partial class ContractsControl : UserControl, INavigate
+    public partial class ContractsControl : UserControl, INavigate, IRefreshable
     {
         private readonly List<GridAction> gridActions = new List<GridAction>();
         private readonly XmlOperation xmlOperation = new XmlOperation();
         private readonly Helper helper = new Helper();
         private readonly Factory factory = new Factory();
         private int totalContracts = 0;
-        private readonly int pageSize = 10;
+        private readonly int pageSize = 50;
         private int currentPage = 1;
         public ContractsControl()
         {
@@ -107,6 +107,11 @@ namespace Camps.Forms
                     MessageBox.Show($"Contract saved as XML at: {filePath}", "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        public void Refreshdata()
+        {
+            LoadData();
         }
     }
 }
